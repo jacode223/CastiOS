@@ -1,0 +1,5 @@
+OK: Serial TX real, PCI, API de drivers y rechazo de install sin confirmacion
+OK: Disco instalado arranca SIN ISO y conserva ASFS y drivers
+OK: Persistencia tras apagar y volver a abrir el disco sin CD
+OK: Instalador rechaza disco con datos sin modificarlo
+OK: Instalador host crea disco arrancable y rechaza destinos existentes

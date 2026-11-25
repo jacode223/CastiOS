@@ -1,0 +1,6 @@
+MiniDRV: crear, activar, echo, contador, descargar, duplicados y proteccion de builtins
+Fuentes y carpetas persistentes; activacion explicita tras reinicio
+AFS4: archivo de 8000 bytes, entrada 200, editor y recuperacion de copia
+Migracion de AFS2 conservando archivos y carpetas
+Disco GRUB arranca sin ISO con AFS4 y fuentes de drivers
+Instalador Live formatea ASFS4 y arranca GRUB sin CD

@@ -1,0 +1,8 @@
+RECUPERACION EN CASTIOS 0.25
+Nuevo deja Estable elegido despues de detectar el disco, antes de HSFS.
+Si el disco HSFS no monta, el sistema usa RAM temporal sin escribir en el volumen invalido.
+Si falla antes de detectar el disco: elige CastiOS estable en el menu GRUB.
+Si funciona la prueba: ejecuta castctl kaccept en esa sesion.
+Si falla el disco o GRUB: restaura una copia desde otro sistema.
+USB FAT32 es solo lectura; apps AX05 estan aisladas, drivers CPL0 no.
+HSFS duplica metadatos, pero no los datos de archivos grandes. Haz copias externas.

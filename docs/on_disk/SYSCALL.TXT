@@ -1,0 +1,36 @@
+SYSCALLS AX05 (CPL3)
+EAX=1 exit(EBX=codigo); EAX=2 yield; EAX=3 getpid;
+EAX=4 ticks (100/segundo); EAX=5 write(EBX=puntero, ECX=largo).
+EAX=6 open(EBX=nombre,ECX=largo) -> FD 3; EAX=7 read(EBX=3,
+ECX=buffer,EDX<=256) -> bytes; EAX=8 close(EBX=3) -> 0.
+EAX=9 stat(EBX=nombre,ECX=largo,EDX=buffer8) -> tipo,tamano.
+EAX=10 file_write(EBX=3,ECX=buffer,EDX<=256) -> bytes.
+file_write requiere chmod APP.app +w desde la shell; -w revoca. Sin permiso: -13.
+EAX=15 swap_alloc -> pagina 0x20004000; EAX=16 swap_out -> 0;
+EAX=17 swap_in -> pagina; EAX=18 sleep(EBX=ticks), solo bg.
+Consulta /docs/SWAP.TXT. No es paginacion automatica.
+EAX=11..14 reservadas; devuelven -38.
+Resultado en EAX. Errores: -38 no implementada, -14 puntero,
+-22 longitud o byte invalido. No es compatible con Linux.
+write admite 0..256 bytes de una pagina del proceso (codigo
+0x20000000..0x20000fff, pila 0x20002000..0x20002fff,
+swap 0x20004000 o pagina presente 0x20008000..0x2000bfff).
+ASCII imprimible o salto de linea. Comprueba todo antes de imprimir.
+Los nombres son de la raiz, ASCII, 1..31 bytes, sin barras. Solo un FD 3
+por proceso. read avanza el cursor. file_write guarda texto ASCII/LF en
+archivo normal existente de un registro (<=8000 bytes); sin crear/truncar.
+Errores: -2 no existe; -9 descriptor; -21 tipo; -30 solo lectura;
+-5 fallo de disco. Las apps AX05 no tienen permisos por usuario.
+Ejemplo: castctl write pid.asm bits 32;
+castctl append pid.asm mov eax, 3;
+castctl append pid.asm int 0x80;
+castctl append pid.asm ret;
+castctl asm pid.asm pid.app; exec pid.app.
+
+Graficos i386: 19 ancho, 20 alto, 21 rectangulo, 22 tecla en primer
+plano, 23 texto ASCII de 1 a 4 caracteres. Para 23: EBX=texto (primer
+caracter en el byte bajo), ECX=x+y*65536, EDX=color RGB. Devuelve 0
+si dibuja o -22 si el texto no cabe o no hay framebuffer disponible.
+Ejemplo Castic: syscall(23,'Hola',655370,16777215,a);
+EAX=24, EBX=0..3 (hda..hdd): sectores de 512 bytes accesibles,
+0 sin disco utilizable, -22 indice invalido. Consulta de solo lectura.

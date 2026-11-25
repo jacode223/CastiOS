@@ -1,0 +1,4 @@
+fn f { syscall(21,0,50332672,1519443,a); }
+fn k { syscall(22,0,0,0,a); }
+fn w { syscall(19,0,0,0,x); }
+fn h { syscall(20,0,0,0,y); }

@@ -1,0 +1,2 @@
+fn z { let a 0; }
+fn o { let a 1; }

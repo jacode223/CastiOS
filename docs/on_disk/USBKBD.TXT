@@ -1,0 +1,9 @@
+TECLADO USB HID - CASTIOS 0.32
+castctl usbscan configura el primer teclado HID boot de alta velocidad
+conectado directamente a EHCI. castctl usbkbd muestra su estado.
+El teclado escribe en la shell; funciona con discos USB al mismo tiempo.
+Los discos EHCI FAT32 siguen siendo de solo lectura. Tras conectar o
+retirar uno, usa castctl usbscan y vuelve a montarlo; usbinfo indica
+desconexion y contador de fallos. Las lecturas reintentan fallos breves.
+El teclado PS/2 sigue disponible. Sin hubs, teclado USB lento o xHCI.
+No hay raton USB; el mouse PS/2 funciona por separado.

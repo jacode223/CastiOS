@@ -1,0 +1,13 @@
+ACTUALIZACION INTERNA A/B (CastiOS 0.25)
+En la imagen HDD: nano /src/process.asm, castctl kbuild.
+O copia un kernel .img de FAT32 a HSFS: cp /mnt/kernel.img /kernel.img.
+castctl kapply kernel.img valida Multiboot, escribe la ranura nueva,
+la relee y solo entonces selecciona el siguiente arranque.
+castctl kstatus muestra la seleccion; reboot reinicia.
+GRUB muestra Estable y Nuevo durante cinco segundos. Nuevo tiene un intento:
+tras detectar el disco deja Estable ANTES de montar HSFS. Si funciona,
+castctl kaccept durante esa sesion lo confirma. Desde Estable no se admite.
+Si se bloquea antes de detectar el disco, selecciona Estable en GRUB.
+Puedes usar castctl krollback para forzar Estable.
+La ranura Estable no se sobrescribe. No hay watchdog ante cuelgues tempranos.
+Solo en HDD compatible con HSFS del mismo disco y arranque BIOS GRUB.

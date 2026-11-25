@@ -1,0 +1,4 @@
+GRUB Multiboot, CR0.PG, paginas, doble free, carpetas y programas
+Recuperacion de copia valida al corromper volumen primario
+Instalador Live escribe GRUB y disco arranca sin ISO
+Disco GRUB generado por instalador host

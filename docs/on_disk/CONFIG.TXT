@@ -1,0 +1,9 @@
+CONFIGURACION DE CASTIOS
+castctl kshow muestra el prompt y color del kernel.
+castctl kset color green cambia y guarda el color; cyan y white tambien.
+castctl kset prompt MiOS cambia y guarda el prompt (ASCII, 1..23 letras).
+La configuracion esta en /system.cfg. nano /system.cfg la edita;
+castctl kreload valida y aplica los cambios sin reiniciar.
+El siguiente arranque vuelve a leer /system.cfg si hay HSFS persistente.
+Esto no recompila el kernel: para cambiar sus instrucciones completas
+todavia hace falta GCC/ld fuera de CastiOS.

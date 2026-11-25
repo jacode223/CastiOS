@@ -1,0 +1,11 @@
+# HSFS5 con archivos grandes
+
+`cp /mnt/ARCHIVO /DESTINO` importa automáticamente un archivo FAT32 de hasta 100 MiB a HSFS. Para archivos de más de 1 MiB usa un bloque temporal de 1,44 MiB (1 474 560 bytes) en RAM, lee ese bloque y lo escribe en el disco; no carga el archivo entero. Para archivos pequeños conserva la importación anterior. `cpbig` sigue disponible como alias explícito para importar al formato grande. Necesita 200 MiB de RAM para el runtime C y discos distintos para origen y destino. La imagen incluida es de 192 MiB.
+
+Para alternar dos copias, usa `cp /mnt/usb/A.BIN /a.bin /mnt/usb/B.BIN /b.bin`. Cada transferencia avanza un bloque de hasta 1,44 MiB por turno y comparte un solo bloque temporal. El controlador de disco es síncrono: esto permite intercalar dos trabajos, pero no hace E/S simultánea ni acelera por sí mismo la transferencia. Esta forma guarda ambos registros juntos después de escribir y vaciar los datos; si falla antes, ninguno de los dos archivos nuevos queda confirmado. No sobrescribe destinos existentes. Cada archivo tiene un límite de 100 MiB y la suma necesita espacio en HSFS.
+
+El registro HSFS de tipo 5 guarda longitud y sector inicial. Los datos se escriben desde el sector 16384 del volumen, fuera de las dos copias del area de 480 bloques. Tras escribir y vaciar la caché del controlador, se confirma el registro con la sincronización habitual. Si falla antes, queda espacio huérfano que podrá sobrescribirse al reintentar. Los archivos grandes se leen con `cat` por sectores y `ls` muestra el tamaño; `tools/asfs.py get` permite extraerlos en el anfitrión. `write`, `append`, `nano`, Speed y NASM siguen limitados a archivos pequeños. Los datos grandes no están duplicados ni tienen checksum: la copia espejo cubre solo metadatos. Desde 0.22 el asignador busca el primer hueco libre en sectores, incluyendo los que deja un archivo grande borrado, y evita solapamientos entre dos copias de la misma operación. No compacta datos existentes.
+
+RMFS está separado en `/ram`, usa páginas según demanda, 64 nodos y 64 KiB por archivo. Su contenido se pierde al reiniciar. Con HSFS en disco, la raíz `/` persiste; sin disco la shell comienza en `/ram`.
+
+Validación realizada: importación de 5 MiB y 100 MiB en QEMU, extracción posterior y comparación SHA-256 byte por byte. No probado en VirtualBox con esta versión.

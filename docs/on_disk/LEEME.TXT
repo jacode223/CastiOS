@@ -1,0 +1,6 @@
+CASTIOS 0.36 - GUIAS
+help muestra comandos; castctl help muestra servicios.
+ls /docs lista guias; cat /docs/NOMBRE.TXT abre una.
+Las rutas son absolutas desde / o relativas a la carpeta actual.
+Ejemplo: cd /docs; cat SHELL.TXT; cd ..
+En nano: Ctrl-O guarda, Ctrl-X sale. PgUp/PgDn mueve la terminal.

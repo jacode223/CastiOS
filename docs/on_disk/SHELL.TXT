@@ -1,0 +1,14 @@
+SHELL CASTIOS 0.35
+help muestra los comandos. castctl help lista servicios internos.
+Ejemplo: castctl write /nota.txt Hola; cat /nota.txt
+Las rutas usan /; FAT32 en /mnt es solo lectura.
+bg APP.app inicia una tarea; ps, kill PID, wait [PID] la gestionan.
+desktop: barra, Inicio (Tab), ventanas y mouse PS/2.
+Flechas/Enter o clic abren; Esc cierra ventana y sale.
+Archivos navega HSFS; Backspace sube. Terminal vuelve a la shell.
+mousestat muestra el mouse.
+Sin tuberias, redireccion ni compatibilidad POSIX completa.
+WM: Ctrl-N cambia foco; Ctrl-W cierra; WASD mueve. Arrastra el titulo.
+Ctrl-Y minimiza; Ctrl-R restaura; Ctrl-E maximiza; Ctrl-Z/X cambia tamano.
+Ctrl-Q sale conservando ventanas en RAM hasta reiniciar.
+castctl peinfo RUTA.exe: inspeccion PE32 x86 y DLL (sin ejecutar).

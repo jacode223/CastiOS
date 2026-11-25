@@ -1,0 +1,12 @@
+SWAP COOPERATIVA AX05
+Swap usa los ultimos 100 KiB del disco HSFS persistente.
+Se siguen excluyendo 4 MiB para compatibilidad con kernels antiguos.
+EAX=15 int 80: crea una pagina privada de datos y devuelve 0x20004000.
+EAX=16 int 80: guarda esa pagina en disco, vacia la cache y libera RAM.
+EAX=17 int 80: lee la pagina, la recupera en RAM y devuelve su direccion.
+EAX=18 EBX=ticks 1..10000: duerme la tarea de fondo sin gastar CPU.
+La app debe llamar 17 antes de acceder de nuevo a la pagina.
+Codigo y pila siguen en RAM.
+Errores: -38 no admitido, -19 sin swap seguro, -12 sin RAM,
+-16 pendiente de recuperar, -22 estado invalido, -5 fallo E/S.
+La swap no esta cifrada: puede contener datos de la app despues de salir.

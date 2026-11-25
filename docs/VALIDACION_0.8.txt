@@ -1,0 +1,9 @@
+NASM 3.02 dentro de QEMU: macros, include, etiquetas, fuente grande, ELF32 y app AX05 ejecutada
+Binarios exactos de 30000 bytes y datos que cruzan extents; ambas copias coherentes
+Errores de sintaxis, fuente ausente, destino carpeta y falta de espacio: disco intacto
+Rutas relativas, carpeta de salida, truncado y liberacion de extents, asignador de memoria
+Recuperacion desde copia secundaria aunque la firma primaria este destruida
+Cadenas corruptas con checksum valido rechazadas por host y kernel
+NASM funciona desde disco instalado GRUB sin ISO
+Regresion: MiniDRV, nano, memoria, persistencia e instalador Live con GRUB
+Migracion ASFS3 en kernel, importacion grande e instalador Live con NASM sin CD

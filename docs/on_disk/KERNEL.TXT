@@ -1,0 +1,16 @@
+FUENTES Y KERNEL
+La imagen HDD distribuida incluye fuentes NASM en /src y un binario
+auxiliar ya compilado en /build. Edita modulos con nano y ejecuta:
+castctl kbuild
+Esto ensambla /kernel.img sin tocar el arranque. Un fallo de NASM
+descarta los cambios del binario candidato; el fuente editado permanece.
+castctl kapply kernel.img
+castctl kstatus
+reboot
+El kernel nuevo ocupa una zona de reserva; el antiguo no se sobrescribe.
+GRUB muestra ambas opciones durante 5 segundos. Si falla el nuevo,
+elige CastiOS estable en GRUB, o usa castctl krollback y reboot.
+La imagen .img debe estar en HSFS del mismo disco de arranque.
+Para copiar una imagen desde FAT32 usa mount y cp /mnt/archivo.img /kernel.img.
+El componente C y GRUB requieren GCC/ld y xorriso fuera de CastiOS.
+QEMU no garantiza que un cambio logico nunca falle en hardware real.

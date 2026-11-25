@@ -1,0 +1,12 @@
+HSFS: ARCHIVOS GRANDES HASTA 100 MiB
+Los archivos normales usan los 480 bloques de metadata/datos HSFS (hasta 3,84 MB).
+Para un archivo mayor en FAT32: mount hdb /mnt/usb; cp /mnt/usb/VIDEO.BIN /video.bin.
+cp usa bloques de 1,44 MiB para los archivos grandes y necesita 200 MiB
+de RAM y un disco HSFS separado con espacio suficiente.
+Para alternar dos copias: cp /mnt/usb/A.BIN /a.bin /mnt/usb/B.BIN /b.bin.
+No son escrituras simultaneas: el controlador de disco las ejecuta por turnos.
+Los datos se escriben en sectores contiguos del disco, no en la RAM ni en el
+area de 480 bloques. ls / muestra el tamano, cat /video.bin lo lee en streaming.
+Un disco de 32 MiB no cabe un archivo de 100 MiB; usa 128 MiB o mas.
+Los datos grandes no tienen copia espejo: haz una copia de seguridad.
+Solo se importan de FAT32; no hay edicion directa de archivos grandes.

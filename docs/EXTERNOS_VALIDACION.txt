@@ -1,0 +1,115 @@
+CastiOS 0.8 — TTF/FAT32/EHCI — validacion 2026-11-11
+QEMU TCG, 256 MiB; imagenes creadas con mkfs.fat y mtools.
+Pruebas en emulacion, no en VirtualBox ni hardware fisico.
+TTF: DejaVu Sans Mono y Liberation Mono; raster ASCII sin bytecode.
+Sanitizers: ASan/UBSan, detect_leaks=0 por entorno, halt_on_error=1.
+Las pruebas son acotadas; no constituyen certificacion universal.
+
+ext-build.log
+xorriso 1.5.6 : RockRidge filesystem manipulator, libburnia project.
+
+xorriso 1.5.6 : RockRidge filesystem manipulator, libburnia project.
+
+
+test_external_ide.log
+volumes
+hda  sectores 65536
+hdb  sectores 133120
+  particion 1 LBA 2048 sectores 131072
+asm:/ > 
+font /mnt/datos/MONO.TTF
+TTF aplicada a la terminal (ASCII; 0 glifos con fallback).
+asm:/ > 
+OK: ide FAT32, LFN, rutas, TTF real, error atomico, importacion exacta y volumen externo intacto.
+
+test_external_ahci.log
+volumes
+hda  sectores 65536
+hdb  sectores 133120
+  particion 1 LBA 2048 sectores 131072
+asm:/ > 
+font /mnt/datos/MONO.TTF
+TTF aplicada a la terminal (ASCII; 0 glifos con fallback).
+asm:/ > 
+OK: ahci FAT32, LFN, rutas, TTF real, error atomico, importacion exacta y volumen externo intacto.
+
+test_external_gpt.log
+volumes
+hda  sectores 65536
+hdb  sectores 133154
+  particion 1 LBA 2048 sectores 131072
+asm:/ > 
+font /mnt/datos/MONO.TTF
+TTF aplicada a la terminal (ASCII; 0 glifos con fallback).
+asm:/ > 
+OK: gpt FAT32, LFN, rutas, TTF real, error atomico, importacion exacta y volumen externo intacto.
+
+test_external_usb.log
+usbscan
+USB EHCI: 1 disco(s) de 512 bytes detectado(s).
+usb0 VID/PID 000046f4/00000001 puerto 1 sectores 131072 listo, solo lectura
+asm:/ > 
+font /mnt/datos/MONO.TTF
+TTF aplicada a la terminal (ASCII; 0 glifos con fallback).
+asm:/ > 
+cat /mnt/datos/HELLO.TXT
+Error: error de lectura o dispositivo desconectado
+asm:/ > 
+OK: usb FAT32, LFN, rutas, TTF real, error atomico, importacion exacta y volumen externo intacto.
+
+test_usb_lifecycle.log
+usbscan
+USB EHCI: 2 disco(s) de 512 bytes detectado(s).
+usb0 VID/PID 000046f4/00000001 puerto 1 sectores 131072 listo, solo lectura
+usb1 VID/PID 000046f4/00000001 puerto 2 sectores 133120 listo, solo lectura
+asm:/ > 
+OK: dos USB, direcciones distintas, superfloppy/MBR, rescan invalida montajes y retirada conserva el segundo.
+OK: ausencia de EHCI explicada sin bloqueo.
+
+test_fat32_errors.log
+OK: FAT32 sector-4k rechazado/sin bloqueo y disco intacto.
+OK: FAT32 bpb-size rechazado/sin bloqueo y disco intacto.
+OK: FAT32 root-zero rechazado/sin bloqueo y disco intacto.
+OK: FAT32 fat-cycle rechazado/sin bloqueo y disco intacto.
+FAT32 negative suite passed.
+
+test_truetype_host.log
+OK: TrueType real + 200 mutaciones y truncados con ASan/UBSan.
+OK: TrueType real + 200 mutaciones y truncados con ASan/UBSan.
+
+test_external_nano.log
+OK: nano dibujado en framebuffer, edicion, guardado exacto, flechas, borrado e historial.
+
+test_external_regression.log
+OK: NASM 3.02 dentro de QEMU: macros, include, etiquetas, fuente grande, ELF32 y app AX05 ejecutada
+OK: Binarios exactos de 30000 bytes y datos que cruzan extents; ambas copias coherentes
+OK: Errores de sintaxis, fuente ausente, destino carpeta y falta de espacio: disco intacto
+OK: Rutas relativas, carpeta de salida, truncado y liberacion de extents, asignador de memoria
+OK: Recuperacion desde copia secundaria aunque la firma primaria este destruida
+OK: Cadenas corruptas con checksum valido rechazadas por host y kernel
+Disco nuevo listo: <temporal>/boot.img
+OK: NASM funciona desde disco instalado GRUB sin ISO
+OK: MiniDRV: crear, activar, echo, contador, descargar, duplicados y proteccion de builtins
+OK: Fuentes y carpetas persistentes; activacion explicita tras reinicio
+OK: AFS4: archivo de 8000 bytes, entrada 200, editor y recuperacion de copia
+OK: Migracion de AFS2 conservando archivos y carpetas
+Disco nuevo listo: <temporal>/hdd.img
+OK: Disco GRUB arranca sin ISO con AFS4 y fuentes de drivers
+OK: Instalador Live formatea ASFS4 y arranca GRUB sin CD
+OK: Regresion: MiniDRV, nano, memoria, persistencia e instalador Live con GRUB
+OK: kernel migra ASFS3 al guardar, conservando contenido
+Imagen nueva: <temporal>/new.img
+OK: importar/exportar fuente de mas de 27000 bytes sin modificar origen
+OK: instalador Live incluye NASM; arranque sin CD y ensamblado persistente
+OK: Migracion ASFS3 en kernel, importacion grande e instalador Live con NASM sin CD
+
+test_make_fat_demo.log
+OK: creador FAT32 nuevo, fuente copiada, README legible y destino existente rechazado sin cambios.
+
+test_external_release.log
+OK: HDD final arranca sin ISO; NASM, framebuffer, FAT32 y TTF funcionan; HDD intacto.
+
+HDD: zona de datos a partir de LBA 32768 conservada byte a byte.
+CastiOS.iso SHA256 dbe9e856ec4e0e7fd9f81833c9441654a5502c0c0ccb38ccf0232548e2dd5bb0
+CastiOS-hdd.img SHA256 6fec577cab8bfbe998a165509ad1086e7e2e13bbff80bbbf5955fc92ebee138b
+kernel.bin SHA256 d44a3e08d00b82fcfb1c27daf88f590792e5139fceb766e09788b89d2fbac0c7

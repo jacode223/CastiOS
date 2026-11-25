@@ -1,0 +1,4 @@
+OK: driver generado hello registrado y probado en una ISO distinta en QEMU.
+OK: callback read retorna Driver hello listo; write ausente retorna ENOSYS.
+OK: nombres duplicados no sobreescriben el kernel.
+OK: drvtest comprueba ABI, duplicados, IRQ, ioctl y errores.

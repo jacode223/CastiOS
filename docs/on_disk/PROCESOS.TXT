@@ -1,0 +1,11 @@
+PROCESOS DE FONDO - CASTIOS 0.28
+bg APP.app inicia una tarea AX05 y muestra su PID.
+ps muestra estados ejecutando, durmiendo o terminado.
+kill PID detiene una tarea bg activa o dormida (ejemplo: kill 1).
+Resultado 143 indica que la detuviste. El kernel libera sus paginas,
+su pagina de swap residente y su descriptor de archivo.
+wait PID espera una tarea, muestra su resultado y libera su ranura.
+wait sin PID espera todas las tareas restantes.
+Una ranura liberada puede usarse mientras otras tareas siguen activas.
+Los PID no se reciclan al reutilizar ranuras; getpid devuelve ese PID.
+Limite: 4 tareas simultaneas. kill solo controla tareas bg desde la shell.

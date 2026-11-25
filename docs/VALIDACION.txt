@@ -1,0 +1,13 @@
+CastiOS 0.4: QEMU TCG, BIOS, 32 MiB.
+OK: Arranque ISO; CR0.PE=1 y selector de codigo 0008 verificados en QEMU
+OK: Drivers registrados, ABI v1, loopback read/write y errores controlados
+OK: Comandos faciles, ayuda especifica y uptime por interrupciones PIT
+OK: ASFS: crear, append, editor multilinea, head y cancelacion
+OK: Validacion de nombres, borrado, limite de 1000 bytes sin sobreescritura
+OK: Tab para archivos/comandos; diez comandos, borrador, Backspace, Esc y Ctrl-U
+OK: Persistencia tras reinicio BIOS
+OK: 32 archivos, disco lleno, reemplazo y reutilizacion de espacio
+OK: Persistencia tras cerrar QEMU y volver a abrir; checksum ASFS y halt
+OK: Disco ajeno sin modificar, fallback RAM
+OK: ASFS corrupto sin modificar, fallback RAM
+OK: ISO sin disco: terminal y archivos en RAM

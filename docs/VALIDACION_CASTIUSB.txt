@@ -1,0 +1,28 @@
+VALIDACION CASTIUSB EXPERIMENTAL - 20/11/2026
+
+Fuente original: CastiOS_i386_swap_100KiB_fuentes(1).zip.
+Herramientas: gcc 14.2.0 -m32 -Os -Wall -Wextra -Werror, GNU ld/objcopy,
+NASM 3.02 nativo compilado a partir del paquete vendor/NASM-3.02-source.zip.
+
+PASS: Runtime C i386 compilado sin avisos, enlazado y objcopy.
+PASS: hddboot.bin ensamblado (512 bytes).
+PASS: kernel i386 framebuffer y TEXT_CONSOLE=1 ensamblados con NASM.
+      Kernel original: 130248 bytes; experimental: 130056 bytes.
+      Limite de imagen: 131072 bytes; 1016 bytes de margen.
+      Runtime C original: 59612 bytes; nuevo: 59420 bytes.
+PASS: test_fat32_large_host.c (FAT32 64 GB simulado, montaje y lectura,
+      5998 clusters seguidos, 47 sectores FAT leidos, ciclo y desconexion).
+PASS: test_usb_hid_host.c (teclado y raton HID, informes y liberacion).
+PASS: tools/test_castips.py (estatico y ensamblado x64 con NASM 3.02).
+PASS: tools/test_hsfs61_unit.py (jerarquia, ficheros grandes, rangos,
+      recuperacion, corrupcion, v6 legacy y LBA 64-bit).
+PASS: sintaxis Python de tools/test_usb_large_vm.py y shell build.sh.
+PENDIENTE: ISO completa (faltan GRUB, grub-file, grub-mkimage, xorriso).
+PENDIENTE: QEMU y hardware fisico UHCI/EHCI/xHCI (no hay QEMU en entorno).
+PENDIENTE: mediciones de CPU/RAM total en una maquina arrancada; no se
+      atribuye porcentaje de mejora sin benchmark real.
+
+No se ha probado escritura en USB: todos los comandos MSC son de lectura.
+El driver xHCI es experimental. El codigo puede necesitar ajustes en hardware.
+
+PASS: cabecera Multiboot v1 y checksum verificados estaticamente.

@@ -1,0 +1,49 @@
+CastiOS i386 experimental | Deteccion IDE PCI nativa
+
+Arranca la ISO y usa disks para ver la controladora y sus unidades.
+Cada disco IDE PCI nativo detectado aparece con modelo y sectores.
+En los identificadores del inventario, los cuatro digitos finales del
+primer numero indican el fabricante PCI. El segundo numero contiene la
+clase, subclase, interfaz y revision. Tambien puedes usar castctl pci.
+
+Prueba especifica: python3 tools/test_pci_ide_native_vm.py
+La prueba usa puertos de E/S emulados por QEMU y una configuracion
+PCI sintetica en una copia temporal del kernel. La ISO distribuida
+consulta la configuracion PCI del equipo. El modo RAID requiere un
+controlador propio; disks muestra su identificador para diagnostico.
+
+Escritorio Castic y discos
+
+Compila en Linux con make i386. La imagen arrancable es build/CastiOS.iso.
+Desde GRUB BIOS en una VM sin disco, escribe en la terminal:
+    castic /desk.cas /desk.app
+    exec /desk.app
+1 abre Info, 2 lista discos utilizables y 3 muestra las teclas.
+q, Q o Escape vuelve a la terminal. En live sin disco, los cambios
+se pierden al apagar. En un sistema instalado, update conserva los
+archivos existentes; las fuentes del escritorio vienen en este ZIP:
+    examples/castic/desktop.cas  -> /desk.cas
+    lib/desk.cas                 -> /lib/desk.cas
+Usa un nombre de salida libre al recompilar un archivo editado.
+
+Con QEMU, Python y Pillow instalados:
+    python3 tools/test_castic_desktop_vm.py
+    python3 tools/test_castic_graphics_abi.py
+    python3 tools/test_ata_detection.py
+    python3 tools/test_ahci.py
+
+Notas de versiones anteriores
+----------------------------
+CastiOS i386 - CastiUSB experimental (USB + FAT32 + RAM)
+Fuentes completas; conserva swap de 100 KiB, Castic, HSFS y rama x64.
+
+Linux: make i386 (solo i386) o make (tambien x64).
+Requiere gcc multilib, binutils, NASM, Python 3, GRUB i386-pc y xorriso.
+Incluye build/nasm32 original para ejecutar NASM dentro de CastiOS.
+
+USB: usbscan, usbinfo, volumes, mount usb0p1 /mnt/usb, ls /mnt/usb.
+Para FAT32 sin particiones: mount usb0 /mnt/usb.
+No se escribe en el USB. Sin hubs, UAS, OHCI ni exFAT.
+
+Consultar docs/CASTIUSB_EXPERIMENTAL.md y docs/VALIDACION_CASTIUSB.txt.
+Kernel ensamblado, pero ISO y hardware no probados en este entorno.

@@ -1,0 +1,8 @@
+DISCOS, FAT32 Y USB
+castctl volumes enumera discos y particiones; castctl disks da modelo y estado IDE/AHCI.
+castctl usbscan busca USB 2.0 EHCI; castctl usbinfo muestra sus dispositivos.
+mount hdb1 /mnt/datos monta FAT32 de solo lectura; mount lista montajes.
+ls /mnt/datos y cat /mnt/datos/ARCHIVO.TXT consultan su contenido.
+cp /mnt/datos/ARCHIVO.TXT /copia.txt importa al HSFS.
+umount /mnt/datos desmonta. No extraigas un disco durante una lectura.
+La instalacion formatea el destino: conserva una copia antes de repetirla.

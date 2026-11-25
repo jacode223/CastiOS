@@ -1,0 +1,3 @@
+fn i { inc a; }
+fn d { dec a; }
+fn t { mul a 2; }

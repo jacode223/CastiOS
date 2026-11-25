@@ -1,0 +1,72 @@
+Terminal framebuffer — validacion 2026-11-10
+QEMU TCG; perfil RGB32 1024x768 y perfil VGA texto.
+Capturas de pantalla inspeccionadas; sin validacion VirtualBox/hardware fisico.
+test_framebuffer.log
+OK: framebuffer RGB32, shell, scroll, clear, memoria y capturas 1024x768.
+
+test_fb_nano.log
+OK: nano dibujado en framebuffer, edicion, guardado exacto, flechas, borrado e historial.
+
+test_fb_text_fallback.log
+console
+Consola VGA texto: 80x25 (fallback)
+asm:/ > 
+OK: fallback VGA texto probado.
+
+test_fb_ahci.log
+disks
+PCI almacenamiento: IDE (solo puertos legacy) SATA/AHCI 
+hda 65536 sectores | ATA LBA28 | SATA/AHCI QEMU HARDDISK                            [activo]
+hdb 0 sectores | ausente | 
+hdc 0 sectores | ATAPI (sin lectura optica) | 
+hdd 0 sectores | ausente | 
+ATA status/error: 00000050/00000000 fallos E/S: 0
+asm:/ > 
+disks
+PCI almacenamiento: IDE (solo puertos legacy) SATA/AHCI 
+hda 65536 sectores | ATA LBA28 | SATA/AHCI QEMU HARDDISK                            [activo]
+hdb 0 sectores | ausente | 
+hdc 0 sectores | ATAPI (sin lectura optica) | 
+hdd 0 sectores | ausente | 
+ATA status/error: 00000050/00000000 fallos E/S: 0
+asm:/ > 
+OK: AHCI IDENTIFY, lectura, escritura exacta, flush, espejo y reinicio.
+
+test_fb_editor_regression.log
+OK: MiniDRV: crear, activar, echo, contador, descargar, duplicados y proteccion de builtins
+OK: Fuentes y carpetas persistentes; activacion explicita tras reinicio
+OK: AFS4: archivo de 8000 bytes, entrada 200, editor y recuperacion de copia
+OK: Migracion de AFS2 conservando archivos y carpetas
+Disco nuevo listo: <temporal>/hdd.img
+OK: Disco GRUB arranca sin ISO con AFS4 y fuentes de drivers
+OK: Instalador Live formatea ASFS4 y arranca GRUB sin CD
+
+test_fb_system.log
+OK: NASM 3.02 dentro de QEMU: macros, include, etiquetas, fuente grande, ELF32 y app AX05 ejecutada
+OK: Binarios exactos de 30000 bytes y datos que cruzan extents; ambas copias coherentes
+OK: Errores de sintaxis, fuente ausente, destino carpeta y falta de espacio: disco intacto
+OK: Rutas relativas, carpeta de salida, truncado y liberacion de extents, asignador de memoria
+OK: Recuperacion desde copia secundaria aunque la firma primaria este destruida
+OK: Cadenas corruptas con checksum valido rechazadas por host y kernel
+Disco nuevo listo: <temporal>/boot.img
+OK: NASM funciona desde disco instalado GRUB sin ISO
+OK: MiniDRV: crear, activar, echo, contador, descargar, duplicados y proteccion de builtins
+OK: Fuentes y carpetas persistentes; activacion explicita tras reinicio
+OK: AFS4: archivo de 8000 bytes, entrada 200, editor y recuperacion de copia
+OK: Migracion de AFS2 conservando archivos y carpetas
+Disco nuevo listo: <temporal>/hdd.img
+OK: Disco GRUB arranca sin ISO con AFS4 y fuentes de drivers
+OK: Instalador Live formatea ASFS4 y arranca GRUB sin CD
+OK: Regresion: MiniDRV, nano, memoria, persistencia e instalador Live con GRUB
+OK: kernel migra ASFS3 al guardar, conservando contenido
+Imagen nueva: <temporal>/new.img
+OK: importar/exportar fuente de mas de 27000 bytes sin modificar origen
+OK: instalador Live incluye NASM; arranque sin CD y ensamblado persistente
+OK: Migracion ASFS3 en kernel, importacion grande e instalador Live con NASM sin CD
+
+test_fb_deliverable.log
+OK: HDD final arranca con AHCI sin ISO, framebuffer, NASM, memoria y datos intactos.
+
+CastiOS.iso SHA256 e6604fb06f70a78f1996d34b444a16edc231efb36d4b691fa3d364057e9e0677
+CastiOS-hdd.img SHA256 50b87e6d79122001a7e49b54c63e309eaeff046876715d4e9dfebe4be8b44a90
+Zona de datos HDD conservada byte a byte.

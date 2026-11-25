@@ -1,0 +1,26 @@
+; Sustituye @NAME@ por un identificador NASM unico.
+DRIVER @NAME@_driver, @NAME@_name, @NAME@_class, @NAME@_probe, @NAME@_init, @NAME@_read, 0, 0
+@NAME@_name db '@NAME@',0
+@NAME@_class db 'text',0
+@NAME@_message db 'Driver @NAME@ listo',0
+@NAME@_probe:
+    ; Sustituye por deteccion real. Si no hay dispositivo: EAX=ENODEV.
+    xor eax, eax
+    ret
+@NAME@_init:
+    ; Inicializa tu dispositivo; irq_register si necesita interrupciones.
+    xor eax, eax
+    ret
+@NAME@_read:
+    mov esi, @NAME@_message
+    call length
+    cmp ecx, eax
+    jb .small
+    mov edx, eax
+    mov ecx, eax
+    rep movsb
+    xor eax, eax
+    ret
+.small:
+    mov eax, EINVAL
+    ret

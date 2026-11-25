@@ -1,0 +1,7 @@
+ARCHIVOS Y RUTAS
+ls /docs lista una carpeta, cat /docs/LEEME.TXT muestra texto.
+cd /docs entra; cd .. sube; pwd muestra la carpeta actual.
+mkdir /proyectos crea una carpeta; touch /proyectos/nota.txt crea un archivo.
+castctl write /proyectos/nota.txt Hola reemplaza el texto; castctl append agrega una linea.
+nano /proyectos/nota.txt abre el editor. rm /proyectos/nota.txt borra.
+sync guarda cambios. HSFS5 usa hasta 480 bloques de 8 KiB compartidos.

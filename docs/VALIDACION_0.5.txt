@@ -1,0 +1,10 @@
+OK: Drivers IRQ1/PIT/ATA/serial, capacidad IDE y cola sin perdidas
+OK: Carpetas anidadas, rutas / . .., nombres por padre y rechazo de borrado no vacio
+OK: Nano pantalla completa: crear, multilinea, flechas, Home, Supr, guardar y descartar
+OK: Ensamblador nativo x86 y ejecucion; sintaxis incorrecta no destruye salida
+OK: Persistencia de carpetas, texto y binarios tras reinicio y cierre completo
+OK: Instalador selecciona y formatea hdb con confirmacion; hda intacto; arranque sin ISO
+OK: Migracion ASFS1 a ASFS2 validada sin modificar el origen
+OK: Instalador host importa ASFS2 con carpetas y ejecutables
+OK: Volumen corrupto con ciclo se rechaza sin escrituras
+OK: 64 entradas, archivo de 4000 bytes, editor lleno y rechazo de codigo no permitido

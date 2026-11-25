@@ -1,0 +1,55 @@
+CastiOS — shell bitmap optimizada — 2026-11-11
+QEMU TCG: 256 MiB completo; 32 MiB solo funcionamiento basico probado.
+Fuente bitmap 4096 bytes; historial/caches nuevos: maximo 72 KiB.
+No se certifica hardware fisico ni VirtualBox.
+shell-build.log
+xorriso 1.5.6 : RockRidge filesystem manipulator, libburnia project.
+
+xorriso 1.5.6 : RockRidge filesystem manipulator, libburnia project.
+
+
+test_shell_scroll.log
+OK: DOS aliases, ring wrap 256, PgUp/PgDn, live buffer unchanged, typing returns bottom, CLS and memory.
+
+test_shell_32m.log
+OK: shell, framebuffer, scroll, retorno al escribir y memoria con 32 MiB; NASM/TTF no evaluados.
+
+test_shell_aliases.log
+OK: DIR/TYPE/COPY/CLS/VER mayusculas, FAT32 y copia exacta a ASFS.
+
+test_shell_nano.log
+OK: nano dibujado en framebuffer, edicion, guardado exacto, flechas, borrado e historial.
+
+test_shell_framebuffer.log
+OK: framebuffer RGB32, shell, scroll, clear, memoria y capturas 1024x768.
+
+test_shell_regression.log
+OK: NASM 3.02 dentro de QEMU: macros, include, etiquetas, fuente grande, ELF32 y app AX05 ejecutada
+OK: Binarios exactos de 30000 bytes y datos que cruzan extents; ambas copias coherentes
+OK: Errores de sintaxis, fuente ausente, destino carpeta y falta de espacio: disco intacto
+OK: Rutas relativas, carpeta de salida, truncado y liberacion de extents, asignador de memoria
+OK: Recuperacion desde copia secundaria aunque la firma primaria este destruida
+OK: Cadenas corruptas con checksum valido rechazadas por host y kernel
+Disco nuevo listo: <temporal>/boot.img
+OK: NASM funciona desde disco instalado GRUB sin ISO
+OK: MiniDRV: crear, activar, echo, contador, descargar, duplicados y proteccion de builtins
+OK: Fuentes y carpetas persistentes; activacion explicita tras reinicio
+OK: AFS4: archivo de 8000 bytes, entrada 200, editor y recuperacion de copia
+OK: Migracion de AFS2 conservando archivos y carpetas
+Disco nuevo listo: <temporal>/hdd.img
+OK: Disco GRUB arranca sin ISO con AFS4 y fuentes de drivers
+OK: Instalador Live formatea ASFS4 y arranca GRUB sin CD
+OK: Regresion: MiniDRV, nano, memoria, persistencia e instalador Live con GRUB
+OK: kernel migra ASFS3 al guardar, conservando contenido
+Imagen nueva: <temporal>/new.img
+OK: importar/exportar fuente de mas de 27000 bytes sin modificar origen
+OK: instalador Live incluye NASM; arranque sin CD y ensamblado persistente
+OK: Migracion ASFS3 en kernel, importacion grande e instalador Live con NASM sin CD
+
+test_shell_release.log
+OK: HDD final arranca sin ISO; NASM, framebuffer, FAT32 y TTF funcionan; HDD intacto.
+
+HDD: zona de datos conservada byte a byte.
+CastiOS.iso SHA256 920c06ffcd084f05359999e03656862235c0b6fd334263d10de052bc0e74a0d2
+CastiOS-hdd.img SHA256 b1cc1e6082924ebd88c4d452302d84b39e0ea78fa23e3e28079f0136c84985f9
+kernel.bin SHA256 7e5937cfeb7c31d73be2e9f4c57e7ce1fda9cff6b2ad483c588d1588b8745479

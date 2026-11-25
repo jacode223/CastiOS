@@ -1,0 +1,9 @@
+RMFS - SISTEMA DE ARCHIVOS TEMPORAL
+/ram es un volumen separado de HSFS, creado en paginas de RAM al escribir.
+Sin disco, CastiOS comienza en /ram. Con disco, usa /ram/archivo para datos temporales.
+mkdir /ram/proyecto; castctl write /ram/proyecto/a.txt Hola; cat /ram/proyecto/a.txt.
+castctl append /ram/proyecto/a.txt mundo; ls /ram; rm /ram/proyecto/a.txt.
+castctl raminfo muestra nodos y paginas usados. Hasta 64 nodos, 64 KiB por archivo,
+4 MiB teoricos en total si hay RAM suficiente. No guarda nada al reiniciar.
+nano /ram no esta disponible.
+HSFS es el volumen persistente del disco (raiz /); FAT32 se monta en /mnt.

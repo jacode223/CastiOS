@@ -1,0 +1,9 @@
+MEMORIA Y PROCESOS AX05 - CASTIOS 0.26
+AX05 tiene codigo de solo lectura, pila privada y pagina de guardia.
+Al acceder a 0x20008000..0x2000bfff, el kernel crea una pagina de 4 KiB
+puesta a cero. Hasta cuatro paginas por tarea; no hay crecimiento ilimitado.
+Un fallo de pagina fuera de esa zona termina esa tarea, no la shell.
+Las tareas bg liberan paginas y descriptor 3 al terminar o fallar.
+file_write esta denegado por defecto (-13). Desde la shell privilegiada:
+chmod APP.app +w concede escritura; chmod APP.app -w la revoca.
+No hay cuentas de usuario, uid/gid, NX ni swap automatica de esas paginas.

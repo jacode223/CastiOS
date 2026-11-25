@@ -1,0 +1,33 @@
+ESCRITORIO PERSONALIZABLE CON NASM
+
+El escritorio sigue escrito en C. NASM compila su paleta de colores,
+no el codigo C completo. Necesitas el perfil completo (200 MiB de RAM).
+
+Usa nano tema.asm y escribe:
+
+bits 32
+db 'CTH1'
+dd 0x0b1628 ; exterior
+dd 0x172f47 ; fondo
+dd 0x102539 ; cabecera
+dd 0x297eb0 ; acento
+dd 0x24536d ; mosaico
+dd 0x2976a4 ; titulo
+dd 0x52677b ; secundario
+dd 0xe5ebf2 ; ventana
+dd 0x12283d ; barra
+dd 0x286282 ; boton
+dd 0xb5424c ; cerrar
+
+Guarda y compila: nasm -f bin tema.asm -o tema.bin
+Aplica: castctl wmtheme tema.bin
+Abre: desktop
+La paleta permanece durante la sesion; vuelve a cargarla al reiniciar.
+Un binario invalido no cambia los colores anteriores.
+
+ESCRITORIO EXPERIMENTAL EN CASTIC (i386)
+Desde la raiz: castic desk.cas desk.app
+Ejecuta: exec desk.app
+1, 2 y 3 mueven la seleccion. q o Escape vuelve a la terminal.
+Edita desk.cas para cambiarlo. Compila a otro nombre si ya existe desk.app.
+La biblioteca que importa el escritorio esta en /lib/desk.cas.

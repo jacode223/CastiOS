@@ -1,0 +1,22 @@
+CastiOS i386 - VT6421 escritura experimental y tema NASM
+
+La compatibilidad VT6421 se basa en BAR0/BAR1 ya activados por el firmware.
+Lee y escribe mediante PIO LBA28, con sectores logicos de 512 bytes y FLUSH
+CACHE identificado por la unidad. Limite de direccionamiento: 128 GiB.
+Sin FLUSH la escritura y la instalacion se rechazan. Sin DMA, hotplug,
+RAID ni inicializacion de controladora. No se ha probado en una VT6421 real.
+El BIOS de la tarjeta debe permitir arrancar desde el disco para arrancar la
+instalacion; no esta comprobado en el Amilo. No utilices discos RAID ni con
+informacion importante: haz copia y prueba con un disco prescindible.
+Instalar sobrescribe el destino, incluidas particiones y datos anteriores.
+Comandos: disks, install hda (o hdb/hdc/hdd segun disks), FORMAT hda.
+El nombre exacto de confirmacion cambia segun el disco elegido.
+
+El escritorio esta implementado en C. NASM compila una paleta de 11 colores,
+no recompila el gestor de ventanas completo. Lee /docs/ESCRITORIO.TXT.
+Para NASM hace falta el perfil completo con al menos 200 MiB de RAM.
+Los datos de tema deben recargarse tras cada reinicio.
+
+Validacion: instalacion y arranque en QEMU con disco IDE; compilacion de tema
+con NASM dentro del sistema y verificacion grafica. QEMU no emula VT6421 y
+estos resultados no verifican la escritura ni el arranque en el hardware VIA.
