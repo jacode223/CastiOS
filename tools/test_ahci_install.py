@@ -7,7 +7,7 @@ with tempfile.TemporaryDirectory() as t:
  raw=bytearray(32*1024*1024);raw[:SIZE]=fs;raw[8192*512:8192*512+SIZE]=fs;ide.write_bytes(raw);sata.write_bytes(bytes(len(raw)))
  before=hashlib.sha256(ide.read_bytes()).digest()
  os.environ['QEMU_EXTRA_ARGS']=os.environ.get('QEMU_EXTRA_ARGS','')+f' -device ich9-ahci,id=sata -drive file={sata},format=raw,if=none,id=data -device ide-hd,drive=data,bus=sata.3,bootindex=7'
- v=VM(p,ide)
+ v=VM(p,ide,memory=256)
  try:
   print(v.cmd('disks'),flush=True)
   start=len(v.out());v.type('install hdb');v.key('ret');v.wait('FORMAT hdb',start)
@@ -16,7 +16,7 @@ with tempfile.TemporaryDirectory() as t:
  finally:v.close()
  assert hashlib.sha256(ide.read_bytes()).digest()==before
  validate(extract_or_migrate(sata.read_bytes()))
- v=VM(p,boot_disk=True)
+ v=VM(p,boot_disk=True,memory=256)
  try:
   v.cmd('cat sata-boot.txt','instalado')
   v.cmd('nasm -v','NASM version 3.02')

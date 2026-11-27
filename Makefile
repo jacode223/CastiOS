@@ -62,3 +62,10 @@ test-usb-large-vm:
 .PHONY: i386
 i386:
 	CASTIOS_I386_ONLY=1 bash build.sh
+
+.PHONY: test-installer
+test-installer: i386
+	python3 tools/test_graphical_install.py
+	python3 tools/test_installer_errors.py
+	python3 tools/test_public_install_i386.py
+	python3 tools/test_public_install_write_i386.py
