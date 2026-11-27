@@ -7,8 +7,8 @@ with tempfile.TemporaryDirectory() as tmp:
     with disk.open('wb') as f:f.truncate(64*1024*1024)
     vm=VM(p,disk,memory=200)
     try:
-        start=len(vm.out());vm.type('install hda');vm.key('ret');vm.wait('FORMAT hda',start)
-        vm.type('FORMAT hda');vm.key('ret');vm.wait('Formateado e instalado',start)
+        start=len(vm.out());vm.type('install hda');vm.key('ret')
+        vm.wait('Formateado e instalado',start)
         vm.wait('asm:/ > ',start)
     finally:vm.close()
     vm=VM(p,disk,boot_disk=True,memory=200)

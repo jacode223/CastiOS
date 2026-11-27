@@ -1,4 +1,4 @@
-# Instalador gráfico — CastiOS 0.37-exp1
+# Instalador gráfico — CastiOS 0.37-exp2
 
 Versión experimental del 27 de noviembre de 2026. Arquitectura i386, BIOS y framebuffer RGB32 de al menos 1024 × 768. Diseño original inspirado en el asistente de Windows XP; no utiliza código ni recursos de Microsoft.
 
@@ -7,15 +7,15 @@ Versión experimental del 27 de noviembre de 2026. Arquitectura i386, BIOS y fra
 1. Arranca `build/CastiOS.iso` como medio Live.
 2. Escribe `install` sin argumentos.
 3. Avanza con Enter. Selecciona la unidad con 1–4; se muestran hda–hdd, modelo y capacidad accesible en MiB.
-4. Revisa el destino y escribe exactamente `FORMAT hda`, `FORMAT hdb`, etc. No basta con Enter. Un texto incorrecto permanece en la confirmación y no escribe en disco.
+4. Enter sobre el destino inicia la instalacion inmediatamente. El comando de texto install hdX tambien empieza directamente.
 5. Espera la copia, vaciado de caché y verificación por lectura. No retires el medio ni apagues el equipo.
 6. Si termina correctamente, vuelve a la terminal con Enter, apaga/reinicia y retira la ISO para arrancar desde el disco.
 
-Esc cancela la bienvenida o selección, y vuelve a selección desde la confirmación. Durante la copia no se admite cancelación. La interfaz utiliza teclado; no hay controles de ratón todavía.
+Esc cancela la bienvenida o selección. Durante la copia no se admite cancelación. La interfaz utiliza teclado; no hay controles de ratón todavía.
 
 La instalación usa el disco completo. Destruye las estructuras de arranque y las particiones previas; no realiza un borrado seguro de todos los sectores. No instala junto a otro sistema ni conserva una instalación anterior. **Nunca utilices install para actualizar archivos conservando datos.**
 
-El modo de terminal sigue disponible con `install hda|hdb|hdc|hdd`, con la misma confirmación y el mismo motor de copia/verificación. En modo VGA utiliza esa variante. En el sistema instalado se solicita arrancar la ISO Live: el módulo de instalación no se copia al disco.
+El modo de terminal sigue disponible con `install hda|hdb|hdc|hdd`, con el mismo motor de copia/verificación. En modo VGA utiliza esa variante. En el sistema instalado se solicita arrancar la ISO Live: el módulo de instalación no se copia al disco.
 
 ## Validaciones
 
@@ -51,7 +51,7 @@ La ISO es `build/CastiOS.iso`. La imagen de disco interno `build/installer.iso` 
 
 ## Pruebas y límites
 
-`tools/test_graphical_install.py` automatiza bienvenida, selección, confirmación incorrecta, cancelación sin cambios, instalación en hdb, conservación del disco hda, verificación, arranque con ambos discos conectados y persistencia después de otro arranque. Guarda capturas PPM de las pantallas en build.
+`tools/test_graphical_install.py` automatiza bienvenida, selección, cancelación sin cambios, instalación en hdb, conservación del disco hda, verificación, arranque con ambos discos conectados y persistencia después de otro arranque. Guarda capturas PPM de las pantallas en build.
 
 `tools/test_installer_errors.py` cubre ausencia de discos, disco pequeño, errores reales de escritura y lectura de verificación inyectados con blkdebug y continuidad de la shell. Las pruebas solo crean imágenes temporales de QEMU.
 

@@ -26,8 +26,8 @@ with tempfile.TemporaryDirectory() as tmp:
   try:
    vm=VM(p,disk_positions={},memory=32)
    try:
-    off=len(vm.out());vm.type('install hda');vm.key('ret');vm.wait('FORMAT hda',off)
-    vm.type('FORMAT hda');vm.key('ret');vm.wait('Error ATA durante instalacion',off)
+    off=len(vm.out());vm.type('install hda');vm.key('ret')
+    vm.wait('Error ATA durante instalacion',off)
     vm.wait('asm:/ > ',off)
     assert 'Formateado e instalado' not in vm.out()[off:]
     if mode=='verify':assert 'Verificando lectura del disco' in vm.out()[off:]

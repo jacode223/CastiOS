@@ -28,14 +28,10 @@ with tempfile.TemporaryDirectory() as tmp:
         vm.qmp('screendump',{'filename':str(ROOT/'build/setup-welcome.ppm')})
         vm.key('esc');vm.wait('Instalacion cancelada',off);vm.wait('asm:/ > ',off)
         off=start(vm);vm.key('ret');vm.wait('SETUP DISKS',off)
-        vm.key('2');vm.key('ret');vm.wait('SETUP CONFIRM',off)
-        vm.type('FORMAT hda');vm.key('ret');vm.wait('SETUP MISMATCH',off)
-        vm.qmp('screendump',{'filename':str(ROOT/'build/setup-confirm.ppm')})
-        vm.key('esc');vm.key('esc');vm.wait('asm:/ > ',off)
-        assert [digest(first),digest(second)]==before,'cancel/mismatch changed disks'
+        vm.key('2');vm.key('esc');vm.wait('asm:/ > ',off)
+        assert [digest(first),digest(second)]==before
         off=start(vm);vm.key('ret');vm.wait('SETUP DISKS',off)
-        vm.key('2');vm.key('ret');vm.wait('SETUP CONFIRM',off)
-        vm.type('FORMAT hdb');vm.key('ret')
+        vm.key('2');vm.key('ret')
         vm.wait('Verificando lectura del disco...',off)
         vm.wait('Formateado e instalado.',off)
         vm.qmp('screendump',{'filename':str(ROOT/'build/setup-complete.ppm')})
@@ -48,7 +44,7 @@ with tempfile.TemporaryDirectory() as tmp:
     boot=p/'boot';boot.mkdir()
     vm=VM(boot,first,slave=second,boot_disk=True,boot_slave=True,memory=256)
     try:
-        vm.cmd('uname','0.37-exp1')
+        vm.cmd('uname','0.37-exp2')
         vm.cmd('ls /','docs')
         vm.cmd('install','Arranca la ISO Live')
         vm.cmd('castctl write saved.txt persisted','')
@@ -59,4 +55,4 @@ with tempfile.TemporaryDirectory() as tmp:
     try:vm.cmd('cat saved.txt','persisted')
     finally:vm.close()
     assert digest(first)==before[0],'boot modified other disk'
-print('OK: graphical cancel, mismatch, selected hdb, readback, HDD boot and persistence')
+print('OK: graphical cancel, selected hdb, readback, HDD boot and persistence')

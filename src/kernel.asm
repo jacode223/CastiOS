@@ -1,4 +1,4 @@
-; CastiOS 0.37-exp1: bounded clean-room PE32 inspection for Win32 groundwork.
+; CastiOS 0.37-exp2: bounded clean-room PE32 inspection for Win32 groundwork.
 bits 16
 org 0x10000
 %include "src/drivers/abi.inc"
@@ -1212,7 +1212,7 @@ d_%1 db %3,0
 DESC help, 'help', 'help [comando] - ayuda general o especifica'
 DESC clear, 'clear', 'clear - limpiar pantalla'
 DESC echo, 'echo', 'echo TEXTO - mostrar texto'
-DESC version, 'version', 'version - CastiOS 0.37-exp1, kernel de 32 bits'
+DESC version, 'version', 'version - CastiOS 0.37-exp2, kernel de 32 bits'
 DESC whoami, 'whoami', 'whoami - identidad de la sesion'
 DESC uptime, 'uptime', 'uptime - segundos desde el arranque (PIT 100 Hz)'
 DESC mem, 'mem', 'mem - memoria convencional informada por BIOS'
@@ -1298,10 +1298,10 @@ castctl_help db 'castctl: write append fsinfo raminfo mem time color console dis
 n_about db 'about',0
 n_cls db 'cls',0
 n_theme db 'theme',0
-title db 'CastiOS 0.37-exp1',10,'HELP: comandos | PgUp/PgDn: scroll',10,0
+title db 'CastiOS 0.37-exp2',10,'HELP: comandos | PgUp/PgDn: scroll',10,0
 prompt db 'CastiOS> ',0
        times 32-($-prompt) db 0
-versionmsg db 'CastiOS 0.37-exp1 | x86 | CPL3 | HSFS5 | USB HID',10,0
+versionmsg db 'CastiOS 0.37-exp2 | x86 | CPL3 | HSFS5 | USB HID',10,0
 usermsg db 'root (sesion unica; sin autenticacion)',10,0
 secondsmsg db ' segundos',10,0
 memmsg db ' KiB convencionales (no representa toda la RAM)',10,0

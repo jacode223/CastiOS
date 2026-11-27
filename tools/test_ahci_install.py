@@ -10,8 +10,8 @@ with tempfile.TemporaryDirectory() as t:
  v=VM(p,ide,memory=256)
  try:
   print(v.cmd('disks'),flush=True)
-  start=len(v.out());v.type('install hdb');v.key('ret');v.wait('FORMAT hdb',start)
-  v.type('FORMAT hdb');v.key('ret');v.wait('Formateado e instalado',start);v.wait('asm:/ > ',start)
+  start=len(v.out());v.type('install hdb');v.key('ret')
+  v.wait('Formateado e instalado',start);v.wait('asm:/ > ',start)
   v.cmd('castctl write sata-boot.txt instalado','Guardado en disco')
  finally:v.close()
  assert hashlib.sha256(ide.read_bytes()).digest()==before

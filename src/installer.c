@@ -1,6 +1,6 @@
-/* CastiOS 0.37-exp1: original XP-inspired, keyboard-first Live installer.
+/* CastiOS 0.37-exp2: original XP-inspired, keyboard-first Live installer.
  * Separate Multiboot module: never included in the installed kernel/image.
- * BIOS/whole disk only. All mutations are behind exact FORMAT hdX consent.
+ * BIOS/whole disk only. All mutations are initiated by explicit disk selection.
  */
 typedef unsigned int u32;
 typedef unsigned short u16;
@@ -22,23 +22,48 @@ static struct install_api *A;
 static int graphical;
 static u32 target, completed, total, last_percent;
 static u8 verify_buf[512];
-static const char *steps[]={"1  Bienvenida","2  Elegir disco","3  Confirmar borrado","4  Copiar y verificar","5  Finalizar"};
+
 static void logmsg(const char *s){while(*s){u8 c=*s++;__asm__ volatile("outb %0,$0xe9"::"a"(c));}}
 static void say(const char *s){if(graphical)logmsg(s);else xs(s);}
 static void text(u32 x,u32 y,const char*s,u32 c){gfx_text(x,y,s,c);}
 static void num(char *b,u32 n){char rev[11];u32 k=0,j=0;do{rev[k++]=(char)('0'+n%10);n/=10;}while(n);while(k)b[j++]=rev[--k];b[j]=0;}
 static void frame(u32 step,const char *title){
- gfx_rect(0,0,*X.fb_width,*X.fb_height,0x315ba6);
- gfx_rect(32,32,960,68,0x153b7a);
- text(58,48,"CastiOS",0xffffff);text(58,74,"0.37-exp1  /  Instalacion experimental",0xb8d5ff);
- gfx_rect(32,100,248,620,0x224b90);
- for(u32 i=0;i<5;i++)text(48,145+i*60,steps[i],i==step?0xffffff:0x9ebde9);
- gfx_rect(280,100,712,620,0xf0eee5);
- text(308,130,title,0x14386d);
- gfx_rect(304,164,664,2,0xc5c4be);
- gfx_rect(280,654,712,66,0xd9d8d0);
- text(308,681,step==3?"Espera a que termine. No apagues el equipo.":
-      step==4?"Enter / Esc: volver a la terminal":"Enter: continuar   Esc: cancelar/volver",0x26354a);
+ /* Four visible stages. Copy and readback share the progress page. */
+ u32 stage=step>=3?step-1:step;
+ const char *labels[]={"Bienvenida","Disco de destino","Instalacion","Resultado"};
+ for(u32 y=0;y<*X.fb_height;y++){
+  u32 t=y*48/(*X.fb_height);
+  gfx_rect(0,y,*X.fb_width,1,((18+t)<<16)|((41+t)<<8)|(70+t));
+ }
+ gfx_rect(37,49,956,674,0x152c42);
+ gfx_rect(30,40,956,676,0xf7f9fc);
+ gfx_rect(30,40,248,676,0x153756);
+ gfx_rect(55,73,28,28,0x4ed8bb);
+ gfx_rect(62,80,14,14,0x153756);
+ text(96,79,"CastiOS",0xffffff);
+ text(54,127,"INSTALADOR LIVE",0x94daca);
+ for(u32 i=0;i<4;i++){
+  u32 y=206+i*60;
+  if(i==stage)gfx_rect(42,y-13,224,43,0x245171);
+  gfx_rect(55,y+4,8,8,i<=stage?0x60e9c4:0x637d93);
+  text(79,y,labels[i],i==stage?0xffffff:0xc1d0df);
+ }
+ text(55,662,"i386  /  0.37-exp2",0xbdd1dd);
+ text(308,85,"ASISTENTE DE INSTALACION",0x437771);
+ /* Double-size bitmap headings reuse the resident console font. */
+ for(u32 i=0;title[i];i++)for(u32 row=0;row<16;row++){
+  u8 bits=X.font[(u8)title[i]*16+row];
+  for(u32 col=0;col<8;col++)if(bits&(128>>col))
+   gfx_rect(308+16*i+2*col,124+2*row,2,2,0x173750);
+ }
+ gfx_rect(308,173,630,1,0xd6dfe4);
+ gfx_rect(279,628,706,1,0xd6dfe4);
+ if(step!=3){
+  text(310,663,step==4?"Esc   Salir":"Esc   Cancelar",0x456573);
+  gfx_rect(724,647,224,46,step==1?0x9a3436:0x126b64);
+  text(740,662,step==1?"Enter   Borrar e instalar":step==4?"Enter   Finalizar":"Enter   Continuar",0xffffff);
+ }
+
 }
 static void message(u32 y,const char*s){text(308,y,s,0x283b54);}
 static int valid(u32 t){return t<4 && X.caps[t]>=MIRROR+FS_SECTORS && A->flush_cap[t]==1;}
@@ -48,7 +73,7 @@ static void progress(const char *phase,int force){
  if(!force && percent==last_percent)return;
  last_percent=percent;
  if(graphical){
-  gfx_rect(308,260,650,100,0xf0eee5);message(260,phase);
+  gfx_rect(308,260,650,100,0xf7f9fc);message(260,phase);
   gfx_rect(308,304,640,28,0x263f6e);gfx_rect(312,308,632*percent/100,20,0x4ba84a);
   char b[11];num(b,percent);text(308,344,b,0x283b54);text(340,344,"%",0x283b54);
  }
@@ -88,33 +113,10 @@ static int install(void){
  *X.persistent_fs=1;
  return 1;
 }
-static int exact(const char*a,const char*b){while(*a&&*a==*b){a++;b++;}return *a==*b;}
-static int confirm(void){
- char wanted[]="FORMAT hda",input[11];u32 n=0;wanted[9]=(char)('a'+target);input[0]=0;
- if(graphical){
-  frame(2,"Confirmar instalacion en disco completo");
-  message(196,"ATENCION: se borraran las particiones y los datos.");
-  message(224,"No es una instalacion dual boot ni una actualizacion.");
-  message(260,"Para continuar, escribe exactamente:");text(308,292,wanted,0xa82020);
- }else{xs("ATENCION: se borrara el disco elegido, sus particiones y datos.\n");xs(wanted);xs("\n");}
- say("SETUP CONFIRM\n");
- for(;;){
-  if(graphical){gfx_rect(308,330,500,32,0xffffff);text(316,338,input,0x122e59);}
-  u32 k=X.key();
-  if(k==27)return 0;
-  if(k==13||k==10){
-   if(!graphical)X.out(10);
-   if(exact(input,wanted))return 1;
-   if(!graphical)return 0;
-   message(390,"No coincide. Corrige el texto o pulsa Esc.");say("SETUP MISMATCH\n");
-  }else if(k==8){if(n){input[--n]=0;if(!graphical)X.out(8);}}
-  else if(k>=32&&k<=126&&n<10){input[n++]=(char)k;input[n]=0;if(!graphical)X.out(k);}
- }
-}
 static void disks(void){
  frame(1,"Selecciona el disco de destino");
- message(190,"Pulsa 1, 2, 3 o 4 para seleccionar; Enter confirma.");
- message(214,"Capacidad accesible en MiB. Se usa el disco completo.");
+ message(190,"Pulsa 1, 2, 3 o 4 para seleccionar; Enter BORRA e instala.");
+ message(214,"Se perderan todas las particiones del disco seleccionado.");
  for(u32 i=0;i<4;i++){
   u32 y=258+76*i;char label[]="1  hda";char size[11];
   label[0]=(char)('1'+i);label[5]=(char)('a'+i);
@@ -134,14 +136,14 @@ void installer_entry(struct install_api *api,const char *args){
   if(args[0]!='h'||args[1]!='d'||args[2]<'a'||args[2]>'d'||args[3]){xs("Uso: install hda|hdb|hdc|hdd\n");return;}
   target=(u32)(args[2]-'a');
   if(!valid(target)){xs("Instalacion rechazada: disco ausente, no compatible o pequeno.\n");return;}
-  if(!confirm()){xs("Instalacion cancelada. Discos sin cambios.\n");return;}
+
  }else{
-  frame(0,"Bienvenido al asistente de CastiOS");
+  frame(0,"Instala CastiOS");
   message(202,"Instalador Live para PC BIOS de 32 bits.");
   message(242,"Instala arranque GRUB, kernel y archivos del sistema.");
   message(282,"Necesitas un disco de pruebas que puedas borrar.");
   message(322,"Version experimental. No conserva otros sistemas.");
-  message(362,"Interfaz de teclado inspirada en instaladores clasicos.");
+
   say("SETUP WELCOME\n");
   for(;;){u32 k=X.key();if(k==27)goto cancel;if(k==13||k==10)break;}
   target=4;for(u32 i=0;i<4;i++)if(valid(i)){target=i;break;}
@@ -152,12 +154,12 @@ void installer_entry(struct install_api *api,const char *args){
     if(k>='1'&&k<='4'){target=k-'1';disks();}
     if((k==13||k==10)&&valid(target))break;
    }
-   if(confirm())break;
+   break;
   }
  }
  int ok=install();
  if(graphical){
-  frame(4,ok?"Instalacion completada":"La instalacion no se ha completado");
+  frame(4,ok?"Instalacion completada":"Instalacion interrumpida");
   message(208,ok?"Copia, vaciado de cache y lectura verificados.":"Fallo de E/S o verificacion. El destino puede estar incompleto.");
   message(250,ok?"Retira la ISO y arranca desde el disco seleccionado.":"Conserva el medio Live y revisa la unidad antes de reintentar.");
   message(292,"Enter o Esc: regresar a la terminal.");
