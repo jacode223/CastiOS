@@ -1508,6 +1508,7 @@ lib_utilcas: incbin "lib/util.cas"
 lib_io: incbin "lib/io.inc"
 lib_math: incbin "lib/math.inc"
 
+%include "src/castic_graphics.asm"
 times 0x10000-($-$$) db 0
 incbin "build/nasm_runtime.bin"
 %include "src/castic.asm"

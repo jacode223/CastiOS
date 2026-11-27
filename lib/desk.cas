@@ -2,3 +2,6 @@ fn f { syscall(21,0,50332672,1519443,a); }
 fn k { syscall(22,0,0,0,a); }
 fn w { syscall(19,0,0,0,x); }
 fn h { syscall(20,0,0,0,y); }
+fn r { syscall(21,p,s,c,a); }
+fn t { syscall(23,t,p,c,a); }
+fn b { syscall(21,p,s,c,a); p += 524296; syscall(23,t,p,16777215,a); p -= 524296; }
