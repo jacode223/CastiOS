@@ -210,6 +210,10 @@ syscall_service:
     je .gfx_key
     cmp eax, 23
     je sys_gfx_text4
+    cmp eax, 25
+    je sys_mouse_state
+    cmp eax, 26
+    je sys_input_event
     cmp eax, 24
     je .disk_capacity
     mov eax, -38                 ; ENOSYS

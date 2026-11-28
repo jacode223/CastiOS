@@ -5,3 +5,5 @@ fn h { syscall(20,0,0,0,y); }
 fn r { syscall(21,p,s,c,a); }
 fn t { syscall(23,t,p,c,a); }
 fn b { syscall(21,p,s,c,a); p += 524296; syscall(23,t,p,16777215,a); p -= 524296; }
+fn m { syscall(25,0,0,0,x); syscall(25,1,0,0,y); syscall(25,2,0,0,v); }
+fn e { syscall(26,0,0,0,k); }

@@ -87,10 +87,10 @@ fs_seed_docs:
     mov dword [edi+4], 0x7361632e
     mov dword [edi+RPARENT], 25
     mov dword [edi+RKIND], 1
-    mov dword [edi+RLEN], 277
+    mov dword [edi+RLEN], 379
     add edi, RDATA
     mov esi, lib_deskcas
-    mov ecx, 277
+    mov ecx, 379
     rep movsb
     popad
     ret

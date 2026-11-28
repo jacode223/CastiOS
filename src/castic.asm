@@ -1257,3 +1257,35 @@ val_targets equ VALIDATOR_MAPS+126*4
 
 desk_cas: incbin "examples/castic/desktop.cas"
 
+
+; Mouse ABI 25: EBX=0 x, 1 y, 2 buttons, 3 PS/2 availability.
+sys_mouse_state:
+    cmp ebx, 3
+    ja syscall_service.gfx_invalid
+    movzx eax, byte [mouse_ready]
+    cmp ebx, 3
+    je .done
+    test eax, eax
+    jz .absent
+    cmp ebx, 2
+    je .buttons
+    mov eax, [mouse_x+ebx*4]
+.done:
+    ret
+.buttons:
+    movzx eax, byte [mouse_buttons]
+    ret
+.absent:
+    mov eax, -19
+    ret
+; Foreground blocking input. 0x89 left press, 0x8a movement/release.
+sys_input_event:
+    cmp byte [mt_active], 0
+    jne syscall_service.gfx_busy
+    mov byte [mouse_gui], 1
+    sti
+    call getkey
+    cli
+    mov byte [mouse_gui], 0
+    movzx eax, al
+    ret

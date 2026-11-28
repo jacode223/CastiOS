@@ -1,0 +1,16 @@
+use desk;
+int x = 0;
+int y = 0;
+int v = 0;
+int k = 0;
+int a = 0;
+syscall(23,'Clic',0,16777215,a);
+while (k != 113) {
+    e();
+    m();
+    if (k == 137) {
+        syscall(23,'OK',0,16777215,a);
+    }
+    if (k == 27) { k = 113; }
+}
+return k;
