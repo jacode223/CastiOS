@@ -20,7 +20,8 @@ def iso(folder,output,live=False):
     (folder/'boot/drive.cfg').write_text('set asmdisk=hda\n')
     config=b/('live.cfg' if live else 'disk.cfg')
     if live:
-        config.write_text('search --file --set=root /boot/installer.iso\n'+f'set gfxpayload={video}\nsource /boot/drive.cfg\nmultiboot /boot/kernel.bin disk=$asmdisk\nmodule /boot/installer.iso\nmodule /boot/nasm32 nasm\nboot\n')
+        shutil.copyfile(b/'setup.bin',folder/'boot/setup.bin')
+        config.write_text('search --file --set=root /boot/installer.iso\n'+f'set gfxpayload={video}\nsource /boot/drive.cfg\nmultiboot /boot/kernel.bin disk=$asmdisk\nmodule /boot/installer.iso\nmodule /boot/nasm32 nasm\nmodule /boot/setup.bin setup\nboot\n')
     else:
         (boot/'grub.cfg').write_text(f'set gfxpayload={video}\nsource /boot/drive.cfg\nset default=0\nsource /boot/SLOT.CFG\nset timeout=5\nmenuentry "CastiOS estable" {{\nmultiboot /boot/kernel.bin disk=$asmdisk\nmodule /boot/nasm32 nasm\n}}\nmenuentry "CastiOS nuevo" {{\nmultiboot /boot/NEXT.BIN disk=$asmdisk trial=1\nmodule /boot/nasm32 nasm\n}}\n')
         config.write_text('normal\n')

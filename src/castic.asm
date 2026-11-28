@@ -45,10 +45,10 @@ cmd_castic:
 .next:
     cmp esi, [castic_end]
     jb .not_end
-    cmp dword [castic_depth], 0
-    jne .syntax
     cmp byte [castic_in_function], 0
     jne .end_function
+    cmp dword [castic_depth], 0
+    jne .syntax
     cmp byte [castic_library_active], 0
     je .finish
     mov byte [castic_library_active], 0
@@ -82,15 +82,13 @@ cmd_castic:
     sub eax, esi
     cmp eax, 3
     jb .syntax
-    cmp byte [esi], 'a'
-    jb .function_check
-    cmp byte [esi], 'z'
-    ja .function_check
-    cmp byte [esi+1], '('
-    jne .function_check
-    cmp byte [esi+2], ')'
+    call .name_scan
+    jc .function_check
+    cmp word [edx], '()'
     je .function_call
 .function_check:
+    mov eax, [castic_end]
+    sub eax, esi
     cmp eax, 4
     jb .syntax
     cmp word [esi], 'fn'
@@ -301,14 +299,22 @@ cmd_castic:
     call .sys_spaces
     cmp esi, [castic_end]
     jae .syntax
-    movzx ecx, byte [esi]
-    sub ecx, 'a'
-    cmp ecx, 25
-    ja .syntax
-    bt dword [castic_functions], ecx
+    call .name_scan
     jc .syntax
-    bts dword [castic_functions], ecx
-    inc esi
+    call .name_find
+    jnc .syntax
+    xor ecx, ecx
+.free_function:
+    bt [castic_functions], ecx
+    jnc .free_found
+    inc ecx
+    cmp ecx, 26
+    jb .free_function
+    jmp .syntax
+.free_found:
+    bts [castic_functions], ecx
+    mov [castic_func_names+ecx*4], esi
+    mov esi, edx
     call .sys_spaces
     cmp esi, [castic_end]
     jae .syntax
@@ -332,11 +338,9 @@ cmd_castic:
 .function_call:
     cmp byte [castic_in_function], 0
     jne .syntax            ; bounded inlining, no recursion/nesting
-    movzx ecx, byte [esi]
-    sub ecx, 'a'
-    bt dword [castic_functions], ecx
-    jnc .syntax
-    add esi, 3
+    call .name_find
+    jc .syntax
+    lea esi, [edx+2]
     call .end_statement
     jc .syntax
     mov [castic_call_return], esi
@@ -347,6 +351,59 @@ cmd_castic:
     mov esi, [castic_func_start+ecx*4]
     mov byte [castic_in_function], 1
     jmp .next
+; Names contain 1..31 lowercase letters. EDX ends the token.
+.name_scan:
+    mov edx, esi
+.name_char:
+    cmp edx, [castic_end]
+    jae .name_end
+    cmp byte [edx], 'a'
+    jb .name_end
+    cmp byte [edx], 'z'
+    ja .name_end
+    inc edx
+    jmp .name_char
+.name_end:
+    mov eax, edx
+    sub eax, esi
+    dec eax
+    cmp eax, 30
+    ja .name_bad
+    clc
+    ret
+.name_bad:
+    stc
+    ret
+.name_find:
+    xor ecx, ecx
+.name_slot:
+    bt [castic_functions], ecx
+    jnc .name_next
+    mov ebx, [castic_func_names+ecx*4]
+    mov ebp, esi
+.name_compare:
+    cmp ebp, edx
+    je .name_boundary
+    mov al, [ebp]
+    cmp al, [ebx]
+    jne .name_next
+    inc ebp
+    inc ebx
+    jmp .name_compare
+.name_boundary:
+    cmp byte [ebx], 'a'
+    jb .name_found
+    cmp byte [ebx], 'z'
+    ja .name_found
+.name_next:
+    inc ecx
+    cmp ecx, 26
+    jb .name_slot
+    stc
+    ret
+.name_found:
+    clc
+    ret
 .if_start:
     add esi, 2
     mov byte [castic_block_type], 0
@@ -500,11 +557,32 @@ cmd_castic:
     cmp dword [esi+4], 'all('
     jne .syntax
     add esi, 8
+    mov dword [castic_sys_vars], 0
     mov ebp, castic_sys_args
     mov ecx, 4
 .sys_parse_loop:
     push ecx
+    call .sys_spaces
+    movzx eax, byte [esi]
+    sub eax, 'a'
+    cmp eax, 25
+    ja .sys_immediate
+    bt dword [castic_defined], eax
+    jnc .sys_undefined
+    lea eax, [eax*4+0x20008100]
+    inc esi
+    mov edx, ebp
+    sub edx, castic_sys_args
+    shr edx, 2
+    bts [castic_sys_vars], edx
+    clc
+    jmp .sys_parsed
+.sys_undefined:
+    stc
+    jmp .sys_parsed
+.sys_immediate:
     call .sys_argument
+.sys_parsed:
     pop ecx
     jc .syntax
     mov [ebp], eax
@@ -540,7 +618,7 @@ cmd_castic:
     inc esi
     call .end_statement
     jc .syntax
-    lea eax, [edi+46]
+    lea eax, [edi+70]
     cmp eax, ASMBUF+4000
     ja .too_big
     ; Allocate data page before syscall and preserve result via EBX.
@@ -548,28 +626,20 @@ cmd_castic:
     stosb
     mov eax, [castic_address]
     stosd
-    mov al, 0xbb
-    stosb
-    xor eax, eax
-    stosd
-    mov ax, 0x1889
+    mov ax, 0x008b
     stosw
-    mov al, 0xbb
-    stosb
-    mov eax, [castic_sys_args+4]
-    stosd
-    mov al, 0xb9
-    stosb
-    mov eax, [castic_sys_args+8]
-    stosd
-    mov al, 0xba
-    stosb
-    mov eax, [castic_sys_args+12]
-    stosd
-    mov al, 0xb8
-    stosb
-    mov eax, [castic_sys_args]
-    stosd
+    mov edx, 1
+    mov cl, 0xbb
+    call .emit_argument
+    mov edx, 2
+    mov cl, 0xb9
+    call .emit_argument
+    mov edx, 3
+    mov cl, 0xba
+    call .emit_argument
+    xor edx, edx
+    mov cl, 0xb8
+    call .emit_argument
     mov ax, 0x80cd
     stosw
     mov ax, 0xc389
@@ -582,6 +652,31 @@ cmd_castic:
     stosw
     inc dword [castic_statements]
     jmp .next
+.emit_argument:
+    bt [castic_sys_vars], edx
+    jc .emit_variable
+    mov al, cl
+    stosb
+    mov eax, [castic_sys_args+edx*4]
+    stosd
+    ret
+.emit_variable:
+    mov al, 0xb8
+    stosb
+    mov eax, [castic_sys_args+edx*4]
+    stosd
+    mov ax, 0x008b
+    stosw
+    cmp cl, 0xb8
+    je .emit_done
+    mov al, 0x89
+    stosb
+    mov al, cl
+    sub al, 0xb8
+    add al, 0xc0
+    stosb
+.emit_done:
+    ret
 .sys_spaces:
     cmp esi, [castic_end]
     jae .sys_spaces_done
@@ -1010,11 +1105,13 @@ castic_block_types times 8 db 0
 castic_block_begin times 8 dd 0
 castic_block_patch times 8 dd 0
 castic_functions dd 0
+castic_func_names times 26 dd 0
 castic_func_start times 26 dd 0
 castic_func_end times 26 dd 0
 castic_outer_end dd 0
 castic_call_return dd 0
 castic_in_function db 0
+castic_sys_vars dd 0
 castic_sys_args times 4 dd 0
 castic_c_decl db 0
 castic_assignment db 0
@@ -1031,11 +1128,6 @@ castic_slot dd 0
 castic_length dd 0
 castic_statements dd 0
 castic_text times 133 db 0
-castic_usage db 'Uso: castic FUENTE SALIDA',10,0
-castic_exists db 'Castic: destino existe; no se sobrescribe',10,0
-castic_syntax db 'Castic: sintaxis invalida; usa print texto ASCII',10,0
-castic_big db 'Castic: programa excede el limite AX05',10,0
-castic_ok db 'Castic: compilado i386 AX05',10,0
 
 validate_code:
     ; ESI=bytes, ECX=len. Exige un unico RET al final.
@@ -1137,6 +1229,10 @@ validate_code:
     jz .bad
     cmp byte [esi], 0x18
     je .store_allowed
+    cmp byte [esi], 0xc1
+    je .store_allowed
+    cmp byte [esi], 0xc2
+    je .store_allowed
     cmp byte [esi], 0xc3     ; mov ebx,eax
     jne .bad
 .store_allowed:
@@ -1219,7 +1315,45 @@ val_targets equ VALIDATOR_MAPS+126*4
 
 desk_cas: incbin "examples/castic/desktop.cas"
 
-lib_deskcas: incbin "lib/desk.cas"
+
+; Mouse ABI 25: EBX=0 x, 1 y, 2 buttons, 3 PS/2 availability.
+sys_mouse_state:
+    cmp ebx, 3
+    ja syscall_service.gfx_invalid
+    movzx eax, byte [mouse_ready]
+    cmp ebx, 3
+    je .done
+    test eax, eax
+    jz .absent
+    cmp ebx, 2
+    je .buttons
+    mov eax, [mouse_x+ebx*4]
+.done:
+    ret
+.buttons:
+    movzx eax, byte [mouse_buttons]
+    ret
+.absent:
+    mov eax, -19
+    ret
+; Foreground blocking input. 0x89 left press, 0x8a movement/release.
+sys_input_event:
+    cmp byte [mt_active], 0
+    jne syscall_service.gfx_busy
+    mov byte [mouse_gui], 1
+    sti
+    call getkey
+    cli
+    mov byte [mouse_gui], 0
+    movzx eax, al
+    ret
+
+castic_usage db 'Uso: castic FUENTE SALIDA',10,0
+castic_exists db 'Castic: destino existe; no se sobrescribe',10,0
+castic_syntax db 'Castic: sintaxis invalida; usa print texto ASCII',10,0
+castic_big db 'Castic: programa excede el limite AX05',10,0
+castic_ok db 'Castic: compilado i386 AX05',10,0
+
 
 sys_gfx_text4:
     ; EBX=up to four packed ASCII bytes, ECX=x|y<<16, EDX=RGB.

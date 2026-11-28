@@ -10,10 +10,9 @@ with tempfile.TemporaryDirectory() as tmp:
     try:
         out=vm.cmd('disks','hda ')
         assert 'sectores' in out and 'hdb ' in out,out
-        vm.cmd('install','Uso: install hda|hdb|hdc|hdd')
-        start=len(vm.out());vm.type('install hda');vm.key('ret')
-        vm.wait('FORMAT hda',start)
-        vm.type('no');vm.key('ret')
+        vm.cmd('install bad','Uso: install hda|hdb|hdc|hdd')
+        start=len(vm.out());vm.type('install');vm.key('ret')
+        vm.wait('SETUP WELCOME',start);vm.key('esc')
         vm.wait('Instalacion cancelada. Discos sin cambios.',start)
         vm.wait('asm:/ > ',start)
         vm.cmd('echo sistema-vivo','sistema-vivo')

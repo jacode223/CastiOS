@@ -77,20 +77,20 @@ fs_seed_docs:
     mov dword [edi+4], 0x7361632e
     mov dword [edi+RPARENT], ROOT_ID
     mov dword [edi+RKIND], 1
-    mov dword [edi+RLEN], 1860
+    mov dword [edi+RLEN], 1321
     add edi, RDATA
     mov esi, desk_cas
-    mov ecx, 1860
+    mov ecx, 1321
     rep movsb
     mov edi, RECORDS+31*RSIZE
     mov dword [edi], 0x6b736564
     mov dword [edi+4], 0x7361632e
     mov dword [edi+RPARENT], 25
     mov dword [edi+RKIND], 1
-    mov dword [edi+RLEN], 133
+    mov dword [edi+RLEN], 688
     add edi, RDATA
     mov esi, lib_deskcas
-    mov ecx, 133
+    mov ecx, 688
     rep movsb
     popad
     ret

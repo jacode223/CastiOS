@@ -1,0 +1,40 @@
+use desk;
+int a = 0;
+int p = 0;
+int s = 0;
+int c = 1196117;
+int t = 0;
+int k = 0;
+int x = 0;
+int y = 0;
+int v = 0;
+window();
+p = 6553700;
+s = 19661300;
+c = 15198183;
+frame();
+p = 9175180;
+s = 3145908;
+c = 1471336;
+t = 1634496328;
+button();
+while (k != 113) {
+    event();
+    if (k == 137) {
+        mouse();
+        if (x >= 140) {
+            if (x < 320) {
+                if (y >= 140) {
+                    if (y < 188) {
+                        p = 14418060;
+                        t = 1634496328;
+                        c = 1471336;
+                        label();
+                    }
+                }
+            }
+        }
+    }
+    if (k == 27) { k = 113; }
+}
+return k;

@@ -2,3 +2,14 @@ fn f { syscall(21,0,50332672,1519443,a); }
 fn k { syscall(22,0,0,0,a); }
 fn w { syscall(19,0,0,0,x); }
 fn h { syscall(20,0,0,0,y); }
+fn r { syscall(21,p,s,c,a); }
+fn t { syscall(23,t,p,c,a); }
+fn b { syscall(21,p,s,c,a); p += 524296; syscall(23,t,p,16777215,a); p -= 524296; }
+fn m { syscall(25,0,0,0,x); syscall(25,1,0,0,y); syscall(25,2,0,0,v); }
+fn e { syscall(26,0,0,0,k); }
+fn window { syscall(21,0,50332672,c,a); }
+fn frame { syscall(21,p,s,c,a); }
+fn label { syscall(23,t,p,c,a); }
+fn button { syscall(21,p,s,c,a); p += 524296; syscall(23,t,p,16777215,a); p -= 524296; }
+fn event { syscall(26,0,0,0,k); }
+fn mouse { syscall(25,0,0,0,x); syscall(25,1,0,0,y); syscall(25,2,0,0,v); }

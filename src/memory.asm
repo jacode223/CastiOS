@@ -120,6 +120,24 @@ memory_modules:
     mov edx, [ebx+20]
 .modules:
     mov esi, [ebp]
+    cmp dword [esi], 'CINS'
+    jne .elf
+    mov ecx, [ebp+4]
+    sub ecx, esi
+    cmp ecx, 8
+    jb .nextmod
+    cmp ecx, 65536
+    ja .nextmod
+    cmp dword [esi+4], 0x70008
+    jb .nextmod
+    mov eax, 0x70000
+    add eax, ecx
+    cmp [esi+4], eax
+    jae .nextmod
+    mov edi, 0x70000
+    rep movsb
+    jmp .nextmod
+.elf:
     cmp dword [esi], 0x464c457f
     jne .nextmod
     test dword [ebx], 1

@@ -1,3 +1,24 @@
+# CastiOS 0.37-exp2 — instalador gráfico experimental
+
+Esta rama contiene un asistente de instalación i386 inspirado visualmente en los instaladores clásicos de Windows XP, con código y recursos propios.
+
+Arranca la ISO Live y ejecuta `install` sin argumentos. Usa Enter para avanzar, 1–4 para seleccionar un disco y Esc para volver o cancelar antes de copiar. Enter sobre la unidad inicia el borrado inmediatamente.
+
+**Instala en un disco completo y destruye sus particiones. No soporta instalación en una partición ni dual boot seguro.** Para actualizar una instalación existente, consulta el comando `update` y sus límites; no uses `install`.
+
+- Pantallas de bienvenida, selección, progreso y resultado.
+- Modelo, capacidad accesible y elegibilidad de hda–hdd.
+- Copia de GRUB, kernel, archivos iniciales y espejo HSFS5.
+- Vaciado de caché y lectura completa de las regiones escritas antes de declarar éxito.
+- Módulo Live separado (`setup.bin`, unos 6 KiB); no se incorpora al sistema instalado.
+- Interfaz de teclado. Ratón, particiones, UEFI y recuperación transaccional de una instalación interrumpida quedan pendientes.
+
+Compila con `make i386`. La imagen está en `build/CastiOS.iso`. Ejecuta `make test-installer` para las pruebas de instalación sobre discos temporales de QEMU.
+
+Consulta [la guía del instalador](docs/INSTALADOR_GRAFICO.md) para arquitectura, límites y validación.
+
+---
+
 # CastiOS
 
 **Sistema operativo experimental para PC, con kernel propio, shell, escritorio gráfico y herramientas de programación integradas.**
