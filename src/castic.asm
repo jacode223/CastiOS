@@ -82,15 +82,13 @@ cmd_castic:
     sub eax, esi
     cmp eax, 3
     jb .syntax
-    cmp byte [esi], 'a'
-    jb .function_check
-    cmp byte [esi], 'z'
-    ja .function_check
-    cmp byte [esi+1], '('
-    jne .function_check
-    cmp byte [esi+2], ')'
+    call .name_scan
+    jc .function_check
+    cmp word [edx], '()'
     je .function_call
 .function_check:
+    mov eax, [castic_end]
+    sub eax, esi
     cmp eax, 4
     jb .syntax
     cmp word [esi], 'fn'
@@ -301,14 +299,22 @@ cmd_castic:
     call .sys_spaces
     cmp esi, [castic_end]
     jae .syntax
-    movzx ecx, byte [esi]
-    sub ecx, 'a'
-    cmp ecx, 25
-    ja .syntax
-    bt dword [castic_functions], ecx
+    call .name_scan
     jc .syntax
-    bts dword [castic_functions], ecx
-    inc esi
+    call .name_find
+    jnc .syntax
+    xor ecx, ecx
+.free_function:
+    bt [castic_functions], ecx
+    jnc .free_found
+    inc ecx
+    cmp ecx, 26
+    jb .free_function
+    jmp .syntax
+.free_found:
+    bts [castic_functions], ecx
+    mov [castic_func_names+ecx*4], esi
+    mov esi, edx
     call .sys_spaces
     cmp esi, [castic_end]
     jae .syntax
@@ -332,11 +338,9 @@ cmd_castic:
 .function_call:
     cmp byte [castic_in_function], 0
     jne .syntax            ; bounded inlining, no recursion/nesting
-    movzx ecx, byte [esi]
-    sub ecx, 'a'
-    bt dword [castic_functions], ecx
-    jnc .syntax
-    add esi, 3
+    call .name_find
+    jc .syntax
+    lea esi, [edx+2]
     call .end_statement
     jc .syntax
     mov [castic_call_return], esi
@@ -347,6 +351,59 @@ cmd_castic:
     mov esi, [castic_func_start+ecx*4]
     mov byte [castic_in_function], 1
     jmp .next
+; Names contain 1..31 lowercase letters. EDX ends the token.
+.name_scan:
+    mov edx, esi
+.name_char:
+    cmp edx, [castic_end]
+    jae .name_end
+    cmp byte [edx], 'a'
+    jb .name_end
+    cmp byte [edx], 'z'
+    ja .name_end
+    inc edx
+    jmp .name_char
+.name_end:
+    mov eax, edx
+    sub eax, esi
+    dec eax
+    cmp eax, 30
+    ja .name_bad
+    clc
+    ret
+.name_bad:
+    stc
+    ret
+.name_find:
+    xor ecx, ecx
+.name_slot:
+    bt [castic_functions], ecx
+    jnc .name_next
+    mov ebx, [castic_func_names+ecx*4]
+    mov ebp, esi
+.name_compare:
+    cmp ebp, edx
+    je .name_boundary
+    mov al, [ebp]
+    cmp al, [ebx]
+    jne .name_next
+    inc ebp
+    inc ebx
+    jmp .name_compare
+.name_boundary:
+    cmp byte [ebx], 'a'
+    jb .name_found
+    cmp byte [ebx], 'z'
+    ja .name_found
+.name_next:
+    inc ecx
+    cmp ecx, 26
+    jb .name_slot
+    stc
+    ret
+.name_found:
+    clc
+    ret
 .if_start:
     add esi, 2
     mov byte [castic_block_type], 0
@@ -1048,6 +1105,7 @@ castic_block_types times 8 db 0
 castic_block_begin times 8 dd 0
 castic_block_patch times 8 dd 0
 castic_functions dd 0
+castic_func_names times 26 dd 0
 castic_func_start times 26 dd 0
 castic_func_end times 26 dd 0
 castic_outer_end dd 0
@@ -1289,3 +1347,52 @@ sys_input_event:
     mov byte [mouse_gui], 0
     movzx eax, al
     ret
+
+castic_usage db 'Uso: castic FUENTE SALIDA',10,0
+castic_exists db 'Castic: destino existe; no se sobrescribe',10,0
+castic_syntax db 'Castic: sintaxis invalida; usa print texto ASCII',10,0
+castic_big db 'Castic: programa excede el limite AX05',10,0
+castic_ok db 'Castic: compilado i386 AX05',10,0
+
+
+sys_gfx_text4:
+    ; EBX=up to four packed ASCII bytes, ECX=x|y<<16, EDX=RGB.
+    sub esp, 160
+    mov edi, esp
+    push ecx
+    mov ecx, 40
+    xor eax, eax
+    rep stosd
+    pop ecx
+    mov dword [esp], 13
+    movzx eax, cx
+    mov [esp+4], eax
+    shr ecx, 16
+    mov [esp+8], ecx
+    mov [esp+20], edx
+    lea edi, [esp+24]
+    mov eax, ebx
+    mov ecx, 4
+.text_char:
+    test al, al
+    jz .text_end
+    cmp al, 32
+    jb .text_invalid
+    cmp al, 126
+    ja .text_invalid
+    stosb
+    shr eax, 8
+    loop .text_char
+.text_end:
+    lea eax, [esp+24]
+    cmp edi, eax
+    je .text_invalid
+    push esp
+    call [0x20018]
+    add esp, 164
+    test eax, eax
+    jz syscall_service.gfx_invalid
+    jmp syscall_service.gfx_success
+.text_invalid:
+    add esp, 160
+    jmp syscall_service.gfx_invalid
