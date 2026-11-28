@@ -46,6 +46,7 @@ with tempfile.TemporaryDirectory() as tmp:
     try:
         vm.cmd('uname','0.37-exp2')
         vm.cmd('ls /','docs')
+        vm.cmd('castic /desk.cas /desk.app','compilado')
         vm.cmd('install','Arranca la ISO Live')
         vm.cmd('castctl write saved.txt persisted','')
         vm.cmd('cat saved.txt','persisted')

@@ -173,9 +173,9 @@ exec /desk.app
 
 | Tecla | Acción |
 |---|---|
-| `1` | Información |
-| `2` | Discos detectados |
-| `3` | Ayuda |
+| `1` | Abrir información |
+| `S` | Abrir/cerrar Inicio (tecla s minúscula) |
+| `C` | Cerrar ventana (tecla c minúscula) |
 | `Q` o `Escape` | Volver a la terminal |
 
 El código principal está en `/desk.cas` y utiliza `/lib/desk.cas`.
@@ -269,3 +269,5 @@ Abre una [issue](https://github.com/jacode223/CastiOS/issues) e incluye:
 Consulta el archivo [LICENSE](LICENSE).
 
 Los componentes de terceros conservan sus licencias correspondientes, disponibles junto a sus fuentes.
+
+CastiDesk 95 y variables con nombre: [guía de personalización](docs/DESKTOP95.md).

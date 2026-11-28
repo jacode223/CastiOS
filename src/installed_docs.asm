@@ -72,16 +72,19 @@ fs_seed_docs:
     mov esi, lib_utilcas
     mov ecx, 36
     rep movsb
+    cmp dword [0x68000], 'CASN'
+    jne .no_desktop
     mov edi, RECORDS+30*RSIZE
     mov dword [edi], 0x6b736564
     mov dword [edi+4], 0x7361632e
     mov dword [edi+RPARENT], ROOT_ID
     mov dword [edi+RKIND], 1
-    mov dword [edi+RLEN], 1321
+    mov dword [edi+RLEN], 5013
     add edi, RDATA
     mov esi, desk_cas
-    mov ecx, 1321
+    mov ecx, 5013
     rep movsb
+.no_desktop:
     mov edi, RECORDS+31*RSIZE
     mov dword [edi], 0x6b736564
     mov dword [edi+4], 0x7361632e

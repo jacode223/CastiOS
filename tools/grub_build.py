@@ -16,14 +16,15 @@ def iso(folder,output,live=False):
         slot=b'set default=0\n# CASTIOS-SLOT-V1 R\n'
         (folder/'boot/SLOT.CFG').write_bytes(slot.ljust(2047,b' ')+b'\n')
     shutil.copyfile(b/'nasm32',folder/'boot/nasm32')
+    shutil.copyfile(b/'zzcastic.bin',folder/'boot/zzcastic.bin')
     (folder/'boot/zzspeed.bin').unlink(missing_ok=True)
     (folder/'boot/drive.cfg').write_text('set asmdisk=hda\n')
     config=b/('live.cfg' if live else 'disk.cfg')
     if live:
         shutil.copyfile(b/'setup.bin',folder/'boot/setup.bin')
-        config.write_text('search --file --set=root /boot/installer.iso\n'+f'set gfxpayload={video}\nsource /boot/drive.cfg\nmultiboot /boot/kernel.bin disk=$asmdisk\nmodule /boot/installer.iso\nmodule /boot/nasm32 nasm\nmodule /boot/setup.bin setup\nboot\n')
+        config.write_text('search --file --set=root /boot/installer.iso\n'+f'set gfxpayload={video}\nsource /boot/drive.cfg\nmultiboot /boot/kernel.bin disk=$asmdisk\nmodule /boot/installer.iso\nmodule /boot/nasm32 nasm\nmodule /boot/zzcastic.bin castic\nmodule /boot/setup.bin setup\nboot\n')
     else:
-        (boot/'grub.cfg').write_text(f'set gfxpayload={video}\nsource /boot/drive.cfg\nset default=0\nsource /boot/SLOT.CFG\nset timeout=5\nmenuentry "CastiOS estable" {{\nmultiboot /boot/kernel.bin disk=$asmdisk\nmodule /boot/nasm32 nasm\n}}\nmenuentry "CastiOS nuevo" {{\nmultiboot /boot/NEXT.BIN disk=$asmdisk trial=1\nmodule /boot/nasm32 nasm\n}}\n')
+        (boot/'grub.cfg').write_text(f'set gfxpayload={video}\nsource /boot/drive.cfg\nset default=0\nsource /boot/SLOT.CFG\nset timeout=5\nmenuentry "CastiOS estable" {{\nmultiboot /boot/kernel.bin disk=$asmdisk\nmodule /boot/nasm32 nasm\nmodule /boot/zzcastic.bin castic\n}}\nmenuentry "CastiOS nuevo" {{\nmultiboot /boot/NEXT.BIN disk=$asmdisk trial=1\nmodule /boot/nasm32 nasm\nmodule /boot/zzcastic.bin castic\n}}\n')
         config.write_text('normal\n')
     subprocess.run(['grub-mkimage','-d',str(d),'-O','i386-pc-eltorito','-p','/boot/grub','-c',str(config),'-o',str(boot/'eltorito.img'),'biosdisk','iso9660','multiboot','normal','search','search_fs_file','configfile','all_video'],check=True)
     subprocess.run(['xorriso','-as','mkisofs','-quiet','-R','-b','boot/grub/eltorito.img','-no-emul-boot','-boot-load-size','4','-boot-info-table','--grub2-boot-info','--grub2-mbr',str(d/'boot_hybrid.img'),'-o',str(output),str(folder)],check=True)

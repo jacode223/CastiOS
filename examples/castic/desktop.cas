@@ -1,60 +1,120 @@
-use desk;
-int a = 0;
-int p = 0;
-int s = 0;
-int c = 0;
-int t = 0;
-int k = 49;
-f();
-syscall(21,0,3671040,1062218,a);
-syscall(23,'Cast',1310748,16777215,a);
-syscall(23,'iOS',1310780,16777215,a);
-syscall(23,'Q',1311650,16777215,a);
-p = 6815784;
-s = 35914672;
-c = 15397108;
-r();
-p = 12189768;
-s = 3539164;
-c = 1471336;
-t = 1868983881;
-b();
-p = 16908360;
-c = 2381690;
-t = 1668507972;
-b();
-p = 21626952;
-c = 3483225;
-t = 1768702291;
-b();
-syscall(23,'1',13369392,1524323,a);
-syscall(23,'2',18087984,1524323,a);
-syscall(23,'Q',22806576,1524323,a);
-while (k != 113) {
-    if (k == 49) {
-        p = 12190028;
-        s = 14418532;
-        c = 14477294;
-        r();
-        syscall(23,'Cast',14025060,1524323,a);
-        syscall(23,'iOS',14025092,1524323,a);
-        syscall(23,'i386',16646500,1524323,a);
-        syscall(23,'API',19267940,1524323,a);
-        syscall(23,'CAS',19267972,1524323,a);
+// CastiDesk 95: cambia primero estos colores (RGB decimal).
+// Posicion = x + y * 65536. Tamano = ancho + alto * 65536.
+// Castic usa enteros sin signo. Hasta 26 variables en total.
+int desktop_color = 32896;
+int panel_color = 12632256;
+int title_color = 128;
+int light_color = 16777215;
+int shadow_color = 8421504;
+int ink_color = 0;
+int taskbar_position = 37093376;
+int taskbar_size = 2229184;
+int window_position = 6553830;
+int window_size = 19661250;
+int start_position = 37355528;
+int start_size = 1704032;
+int menu_open = 0;
+int window_open = 1;
+int running = 1;
+int input_event = 0;
+int mouse_x = 480;
+int mouse_y = 300;
+int cursor_position = 19661280;
+int result = 0;
+
+// Dibujo y eventos se ejecutan en primer plano. Q o Escape sale.
+while (running == 1) {
+
+    syscall(21,0,50332672,desktop_color,result);
+    syscall(21,1835036,2228268,light_color,result);
+    syscall(21,2097184,1572900,title_color,result);
+    syscall(21,4063278,393224,panel_color,result);
+    syscall(21,4456484,262172,panel_color,result);
+    syscall(23,'Mi P',5242904,light_color,result);
+    syscall(23,'C',5242936,light_color,result);
+    if (window_open == 1) {
+    syscall(21,window_position,window_size,panel_color,result);
+    syscall(21,6553830,131522,light_color,result);
+    syscall(21,6553830,19660802,light_color,result);
+    syscall(21,6554278,19660802,ink_color,result);
+    syscall(21,26083558,131522,ink_color,result);
+    syscall(21,6815978,1573306,title_color,result);
+    syscall(23,'Cast',7078130,light_color,result);
+    syscall(23,'iOS',7078162,light_color,result);
+    syscall(21,7013000,1179672,panel_color,result);
+    syscall(23,'X',7078544,ink_color,result);
+    syscall(23,'Cast',10354942,ink_color,result);
+    syscall(23,'ic',10354974,ink_color,result);
+    syscall(23,'Edit',13762814,ink_color,result);
+    syscall(23,'a /d',13762846,ink_color,result);
+    syscall(23,'esk.',13762878,ink_color,result);
+    syscall(23,'cas',13762910,ink_color,result);
+    syscall(23,'S:In',18219262,ink_color,result);
+    syscall(23,'icio',18219294,ink_color,result);
+    syscall(23,'C:Ce',20316414,ink_color,result);
+    syscall(23,'rrar',20316446,ink_color,result);
     }
-    if (k == 50) {
-        p = 12190028;
-        s = 14418532;
-        c = 14477294;
-        r();
-        syscall(23,'HDD',14025060,1524323,a);
-        syscall(24,0,0,0,a);
-        if (a > 0) { syscall(23,'hda',16646500,1524323,a); }
-        syscall(24,1,0,0,a);
-        if (a > 0) { syscall(23,'hdb',16646580,1524323,a); }
+    syscall(21,taskbar_position,taskbar_size,panel_color,result);
+    syscall(21,37093376,132032,light_color,result);
+    syscall(21,start_position,start_size,panel_color,result);
+    syscall(21,37355528,131168,light_color,result);
+    syscall(21,37355528,1703938,light_color,result);
+    syscall(21,38928392,131168,ink_color,result);
+    syscall(21,37355622,1703938,ink_color,result);
+    syscall(23,'Inic',37748754,ink_color,result);
+    syscall(23,'io',37748786,ink_color,result);
+    syscall(21,37486708,1573064,shadow_color,result);
+    syscall(23,'Cast',37748862,light_color,result);
+    syscall(23,'iDes',37748894,light_color,result);
+    syscall(23,'k 95',37748926,light_color,result);
+    syscall(23,'Q: S',37749578,ink_color,result);
+    syscall(23,'alir',37749610,ink_color,result);
+    if (menu_open == 1) {
+    syscall(21,27656196,9306312,panel_color,result);
+    syscall(21,27656196,131272,light_color,result);
+    syscall(21,27656196,9306114,light_color,result);
+    syscall(21,27656394,9306114,ink_color,result);
+    syscall(21,27918344,8781848,title_color,result);
+    syscall(23,'1  M',28835884,ink_color,result);
+    syscall(23,'i PC',28835916,ink_color,result);
+    syscall(21,33685540,65696,shadow_color,result);
+    syscall(23,'Q  S',34996268,ink_color,result);
+    syscall(23,'alir',34996300,ink_color,result);
     }
-    syscall(22,0,0,0,k);
-    if (k == 81) { k = 113; }
-    if (k == 27) { k = 113; }
+    // Cursor compacto; consulta atomica de X/Y empaquetadas.
+    syscall(25,4,0,0,cursor_position);
+    syscall(21,cursor_position,655364,light_color,result);
+    syscall(26,0,0,0,input_event);
+    if (input_event == 113) { running = 0; }
+    if (input_event == 81) { running = 0; }
+    if (input_event == 27) { running = 0; }
+    if (input_event == 115) { menu_open += 1; }
+    if (input_event == 49) { window_open = 1; menu_open = 0; }
+    if (input_event == 99) { window_open = 0; }
+    if (input_event == 137) {
+        syscall(25,0,0,0,mouse_x);
+        syscall(25,1,0,0,mouse_y);
+        // Boton Inicio: x 8..103, y 570..595.
+        if (mouse_x >= 8) { if (mouse_x < 104) {
+            if (mouse_y >= 570) { if (mouse_y < 596) { menu_open += 1; } }
+        } }
+        // El icono abre la ventana de informacion.
+        if (mouse_x < 100) { if (mouse_y >= 28) {
+            if (mouse_y < 190) { window_open = 1; menu_open = 0; }
+        } }
+        // Cerrar ventana.
+        if (mouse_x >= 648) { if (mouse_x < 672) {
+            if (mouse_y >= 107) { if (mouse_y < 128) { window_open = 0; } }
+        } }
+        if (menu_open == 1) {
+            if (mouse_x >= 36) { if (mouse_x < 202) {
+                if (mouse_y >= 426) { if (mouse_y < 514) {
+                    window_open = 1; menu_open = 0;
+                } }
+                if (mouse_y >= 520) { if (mouse_y < 564) { running = 0; } }
+            } }
+        }
+    }
+    if (menu_open > 1) { menu_open = 0; }
 }
-return k;
+return running;

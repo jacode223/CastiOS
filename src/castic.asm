@@ -14,6 +14,17 @@ cmd_castic:
     cmp eax, LIMIT
     ja toolong
     lea esi, [edi+RDATA]
+    cmp dword [0x68000], 'CASN'
+    jne .raw_source
+    push dword EDITBUF
+    push eax
+    push esi
+    call [0x68004]
+    add esp, 12
+    test eax, eax
+    js .syntax
+    mov esi, EDITBUF
+.raw_source:
     mov [castic_input], esi
     add eax, esi
     mov [castic_end], eax
@@ -1313,22 +1324,30 @@ val_boundaries equ VALIDATOR_MAPS
 val_targets equ VALIDATOR_MAPS+126*4
 
 
-desk_cas: incbin "examples/castic/desktop.cas"
+desk_cas equ 0x6c000
+lib_deskcas: incbin "lib/desk.cas"
 
 
 ; Mouse ABI 25: EBX=0 x, 1 y, 2 buttons, 3 PS/2 availability.
 sys_mouse_state:
-    cmp ebx, 3
+    cmp ebx, 4
     ja syscall_service.gfx_invalid
     movzx eax, byte [mouse_ready]
     cmp ebx, 3
     je .done
     test eax, eax
     jz .absent
+    cmp ebx, 4
+    je .packed
     cmp ebx, 2
     je .buttons
     mov eax, [mouse_x+ebx*4]
 .done:
+    ret
+.packed:
+    mov eax, [mouse_y]
+    shl eax, 16
+    or eax, [mouse_x]
     ret
 .buttons:
     movzx eax, byte [mouse_buttons]

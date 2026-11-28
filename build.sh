@@ -6,6 +6,9 @@ if [[ ! -f build/nasm32 ]]; then
     echo 'Falta NASM i386. Ejecuta bash tools/build_nasm32.sh (gcc multilib, libc estatica i386, autoconf, automake, perl).'
     exit 1
 fi
+gcc -m32 -Oz -ffreestanding -fno-pie -fno-stack-protector -fno-builtin -mpreferred-stack-boundary=2 -Wall -Wextra -Werror -c src/castic_names.c -o build/castic_names.o
+ld -m elf_i386 -T src/castic_names.ld build/castic_names.o -o build/castic_names.elf
+objcopy -O binary build/castic_names.elf build/zzcastic.bin
 gcc -m32 -Oz -ffreestanding -fno-pie -fno-stack-protector -fno-builtin -mpreferred-stack-boundary=2 -Wall -Wextra -Werror -Wno-unused-function -c src/installer.c -o build/installer.o
 ld -m elf_i386 -T src/installer.ld build/installer.o -o build/installer.elf
 objcopy -O binary build/installer.elf build/setup.bin

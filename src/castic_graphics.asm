@@ -1,3 +1,1 @@
-; Graphics service and compiler messages placed in the first kernel segment.
-lib_deskcas: incbin "lib/desk.cas"
-
+; UI library is embedded after the runtime.

@@ -8,7 +8,7 @@ cases = {
  'my': 'syscall(25,1,0,0,a); return a;',
  'mb': 'syscall(25,2,0,0,a); return a;',
  'mp': 'syscall(25,3,0,0,a); return a;',
- 'bad': 'syscall(25,4,0,0,a); return a;',
+ 'bad': 'syscall(25,5,0,0,a); return a;',
  'event': 'int a = 0; while (a != 137) { syscall(26,0,0,0,a); } syscall(25,2,0,0,b); return b;',
  'key': 'int a = 0; while (a != 113) { syscall(26,0,0,0,a); } return a;',
  'lib': 'use desk; int x = 0; int y = 0; int v = 0; m(); return x;',
